@@ -1,3 +1,3 @@
 # Ranking Algorithm
 
-Manipulation of stock data combined 
+Manipulation of stock data combined
