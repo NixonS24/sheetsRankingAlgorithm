@@ -1,396 +1,172 @@
-function myFunction() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
+//Global Declarations
+var ss = SpreadsheetApp.getActiveSpreadsheet();
+var userRankingsSheet = ss.getSheetByName("Users Rankings Pull");
+var maxColumns = userRankingsSheet.getMaxColumns();
 
-  //Get Sheets Names
-  var sheetsName = ss.getSheets();
-  //Logger.log(sheetsName);
-  var sheetArray = [];
-  for (var i = 0; i < sheetsName.length; i++) {
-    sheetArray.push(sheetsName[i].getName());
-  }
+function createRanking() {
 
-  //Get names of users in an object
-  var sheet6 = ss.getSheetByName("Users Rankings Pull");
-  var lastRow = sheet6.getLastRow();
-  var userName = sheet6.getRange(1,2,lastRow,1);
-  var userNameValues = userName.getValues();
+  var nameOfSheetArray = [];
+  getSheets(nameOfSheetArray); //returns array with name of Sheets
 
+  var nameOfUsersArray = [];
+  getUsers(nameOfUsersArray); //returns array with name of users
+  var duplicateNameOfSheetArray = nameOfUsersArray.slice();
 
-  //Duplicate Names of Users (above) so position is captured, and store as array because less complicated
-  var userNameArray = [];
-  for (var i = 0; i < userNameValues.length; i++) {
-    userNameArray.push(userNameValues[i][0]);
-  }
-  //Logger.log('userNameArray');
-  //Logger.log(userNameArray);
+  var cleanedUsersArray = removesDuplicates(nameOfUsersArray); //removes duplicates in our Users Array
 
+  var cleanedUsersArray2 = removeSpecialCases(cleanedUsersArray); //removes special cases in Array, Full Name and ""
 
+  var cleanedUsersArray3 = removeOverlap(nameOfSheetArray,cleanedUsersArray2); //removes names from array that already have a sheet
 
-  //Remove Duplicates - this works because I am not comparing across different rows/columns
-  for (var i = 0; i < userNameValues.length; i ++) {
-    var count = 0;
-    for (var t = 0; t < userNameValues.length; t ++) {
+  createNewSheet(cleanedUsersArray3); //create new sheet for users, and adds first row
 
-      if (userNameValues[i][0] === userNameValues[t][0]) {
-        Logger.log(userNameValues[i] + '' + userNameValues[t] + ' special case');
-        count ++;
+  copyValues(duplicateNameOfSheetArray); //copy values and rows into there corresponding sheets
+}
 
-        if (count >= 2) {
-          userNameValues.splice(t,1);
-        }
-         continue;
-      }
-    }
-  }
-  //Logger.log(userNameValues);
+//Grabs the appropriate columns and copys them into their correct sheet (by Name)
+function copyValues(array) {
+  var count = 1;
 
-  //Loop thoough userNames and see if there is a sheet already created for them.
-  for (var name in sheetArray) {
-    for (var i = 0; i < userNameValues.length; i ++) {
+  for (name in array) {
+    var tempSheet = ss.getSheetByName(array[name]);
 
-      //Check how array is being formatted after each loop, and where we are up to in sheetArray
-      //Logger.log(sheetArray[name] + ' ' + userNameValues[i])
-
-      if (userNameValues[i][0] === "Full name") {
-        //Logger.log(userNameValues[i] + ' case 1')
-        userNameValues.splice(i, 1);
-        break;
-      }
-      else if (userNameValues[i][0] == "") {
-        //Logger.log(userNameValues[i] + 'case 2')
-        userNameValues.splice(i, 1);
-        break;
-      }
-     else if (userNameValues[i][0] === sheetArray[name]) {
-        //Logger.log(userNameValues[i] + 'case 3')
-        userNameValues.splice(i, 1);
-        break;
-      }
-    }
-  }
-
-//Logger.log(userNameValues);
-
-  //Create new sheets from remaining
-  for (var i = 0; i < userNameValues.length; i ++) {
-    var newSheet = ss.getSheetByName(userNameValues[i][0]);
-
-    //In case there is an error in the above code
-    if (newSheet != null) {
+    if (tempSheet == null) {
+      count ++;
       continue;
     }
     else {
-      newSheet = ss.insertSheet();
-      newSheet.setName(userNameValues[i][0]);
+      var voteValues = userRankingsSheet.getRange(count, 1, 1, maxColumns).getValues();
+      voteValues[0].unshift(new Date());
+      Logger.log(voteValues);
 
-      var companyNameSheet = ss.getSheetByName("Users Rankings Pull");
-      var maxColums = companyNameSheet.getMaxColumns();
-      var companyNameRange = companyNameSheet.getRange(1,1,1,maxColums);
-      var companyNameValues = companyNameRange.getValues();
-      //Logger.log(companyNameValues);
-
-      var newSheet2 = ss.getSheetByName(userNameValues[i][0]);
-      //Logger.log(newSheet2);
-      //Logger.log(companyNameValues[0].length); , needs the 0 because this an object and not a simple array.
-      newSheet2.getRange(1, 2, 1, companyNameValues[0].length).setValues(companyNameValues);
-    }
-  }
-
-  //Insert row into spreadsheet
-
-  //Logger.log(userNameArray);
-
-  var count = 1;
-
-  userNameArray.forEach(function(name){
-
-    var companyNameSheet = ss.getSheetByName("Users Rankings Pull");
-    var maxColums = companyNameSheet.getMaxColumns(); //this may need to replaced with getLastColumn
-
-    var tempSheet = ss.getSheetByName(name);
-    //maybe think about try and throwing an error to reduce computing load.
-
-    if (tempSheet == null) {
-      //Logger.log(name + " " + count);
+      var lastRow = tempSheet.getLastRow() + 2;
+      tempSheet.getRange(lastRow, 1, 1, voteValues[0].length).setValues(voteValues);
       count ++;
-      return;
-    } else {
 
-      var companyNameRange = companyNameSheet.getRange(count,1,1,maxColums);
-      var companyNameValues = companyNameRange.getValues();
-      companyNameValues[0].unshift(new Date()); //add date to the front of the array, maybe format that this to only dates without the time
-      //Logger.log(count + " " + companyNameValues);
+      createRankingsColumn(lastRow, tempSheet, voteValues); //fills the rankings column witht the appropriate measure
+    }
+  }
+}
 
-      var lastRow = tempSheet.getLastRow() + 2; //adjusted to two for every second row
-      //Logger.log(lastRow); This may need to be updated to insertColumn after position still not sure though - might not reduce computer load at all.
-      tempSheet.getRange(lastRow, 1, 1, companyNameValues[0].length).setValues(companyNameValues);
-     // Logger.log(tempSheetRange);
-      count++;
+//Grabs the Cell and writes the betaValue
+function createRankingsColumn(row, tempSheet, voteValues) {
+  var betaRow = row + 1;
 
-      var betaRow = lastRow + 1; //the row to insert the Beta Function Values - directly below the votes
-      var totalRankingScore = 0;
-      for (var i = 0; i < companyNameValues[0].length; i++) {
-        if (companyNameValues[0][i] == "0") {
-          continue;
-        }
-        //Else if chuck in an exception here that you will skip if it already has a number, this will allow you to refactor and generate a ranking score that is not linked to to this loop/logic.
-        else if (companyNameValues[0][i] == "-1" || companyNameValues[0][i] == "1") {
-          //Logger.log(companyNameValues[0][i] + ' ' + i + ' case 1' );
-          var valueColumn = i;
-          var betaColumn = i + 1; //adjustement due to the different in indexing array (beginning at 0) vs sheet (beginning at 1)
-          var importantCell = tempSheet.getRange(betaRow, betaColumn); //cell directly below the cote
-          importantCell.setValue(betaFunction(betaColumn,tempSheet,lastRow));
-          totalRankingScore += sumRankings(importantCell,companyNameValues[0][i]);
-         //maybe something like var sum = 0 just below BetaRow
-         //then have the SumRankings return a number and then =+ to sum
-        }
-        else {
-          //Logger.log(companyNameValues[0][i] + ' ' + i + ' case 2');
-          //continue;
-        }
+  for (var i = 0; i < voteValues[0].length; i++) {
+    if (voteValues[0][i] == "0") {
+      continue;
+    }
+    else if (voteValues[0][i] == "1" || voteValues[0][i] == "-1") {
+      var targetCell = tempSheet.getRange(betaRow,(i + 1));
+      targetCell.setValue('hello'); //this function brings in the BetaValue
+    }
+    else {
+      continue;
+    }
+  }
+}
 
+
+//create new sheets and adds columns into the array
+function createNewSheet(array) {
+  var maxColumns = userRankingsSheet.getMaxColumns();
+  var stockNames = userRankingsSheet.getRange(1,1,1, maxColumns).getValues();
+
+  for (element in array) {
+    var testSheet = ss.getSheetByName(array[element]);
+    if (testSheet != null) {
+      continue;
+    }
+    else {
+      ss.insertSheet().setName(array[element]);
+      var sheet = ss.getSheetByName(array[element]);
+      sheet.getRange(1, 2, 1, stockNames[0].length).setValues(stockNames);
+    }
+  }
+}
+//remove Overlaps in two Ararys
+function removeOverlap(array1, arrayToBeCleaned) {
+  for (var element in array1) {
+    for (var i = 0; i < arrayToBeCleaned.length; i++) {
+      if (arrayToBeCleaned[i] === array1[element]) {
+        arrayToBeCleaned.splice(i, 1);
+        break;
       }
-
-      tempSheet.getRange(betaRow, 1).setValue(totalRankingScore);
-
-      //write the rankings score here
+      else {
+        continue;
+      }
     }
-
-
-
-
-
-
-
-    //This value is going to be stored just under the voting figures
-    //loop through array of companyNameValues
-    //if 0 move on
-    //HLookup function, which needs to be stored as one component of the string. St
-        //look to spreadsheet to do this,
-    //Custom Beta Function
-        //Needs to take in time as an argument and do some subtraction from the frist date.
-        //maybe this can subtract a row from the first one, and then potentiall round to nearest whole number
-    //This is four decision making tree scenario - another component of the string
-        //past of this needs to take in the hlookup function result && so not sure how this is going to work yet
-    //
-
-
-
-
-
-
-    //Logger.log(name);
-
-  });
-  //var sheetName2 = ss.getSheetByName(name)
-
-  function betaFunction(col, userSheet, currentTimeRow) {
-   var columnLetter = columnToLetter(col);
-
-   var companySheet = ss.getSheetByName("CompanySheet");
-   var lastColumn = companySheet.getLastColumn();
-   var lastRow = companySheet.getLastRow();
-   var maxRow = companySheet.getMaxRows();
-   var lastColumnLetter = columnToLetter(lastColumn);
-
-   var hLookup = ('=HLOOKUP(' + columnLetter + '1 , CompanySheet!A1:' + lastColumnLetter + maxRow + ',' + lastRow + ', FALSE)');
-
-  var initialTime;
-  var currentTime;
-  switch(currentTimeRow) {
-    case 3:
-      Logger.log('case 1')
-      break;
-    case 5:
-      Logger.log('case 2');
-      initialTime = userSheet.getRange(3,1).setNumberFormat("00,000.0000000000").getValues();
-      currentTime = userSheet.getRange(currentTimeRow, 1).setNumberFormat("00,000.0000000000").getValues();
-      break;
-    default:
-      Logger.log('case 3');
-      initialTime = userSheet.getRange(3,1).getValues();
-      currentTime = userSheet.getRange(currentTimeRow, 1).setNumberFormat("00,000.0000000000").getValues();
   }
-
-
-   var diffTime = currentTime[0][0] - initialTime[0][0];
-
-   //var betaWeighting = 'cust
-   var weighting = betaWeighting(diffTime);
-
-
-   return (hLookup + '*' + weighting);
-  }
-
-
-
- function sumRankings(targetSheet, vote) {
-      var attribution = targetSheet.getValue(); //get the score
-      //vote already has the value that I want
-
-    if (vote == "1" && attribution > 0) {
-       //vote is for the stock to go up
-       //stock movement is up
-       Logger.log('positive vote, positive movement');
-       return attribution;
-     }
-     else if (vote == "1" && attribution < 0) {
-       //vote is for the stock to go up
-       //stock  movement is down
-       Logger.log('positive vote, negative movement');
-       return;
-     }
-     else if (vote == "-1" && attribution > 0) {
-       //vote is for the stock market to go down
-       //stock movement is up
-       Logger.log('negative vote, positive movement');
-       return;
-     }
-     else if (vote == "-1" && attribution < 0) {
-       //vote is for the stock to go down
-       //stock market movement is down
-       Logger.log('negative vote, negative movenment');
-       return attribution;
-     }
-     else {
-       return;
-     }
-
-    }
-
-
+  return arrayToBeCleaned;
 }
 
 
-//Code not directly in this function
+function removeSpecialCases(array) {
+  for (var i = 0; i < array.length; i++) {
 
- //Converts Column to Letter
- function columnToLetter(column) {
-  var temp, letter = '';
-  while (column > 0)
-  {
-    temp = (column - 1) % 26;
-    letter = String.fromCharCode(temp + 65) + letter;
-    column = (column - temp - 1) / 26;
-  }
-  return letter;
- }
-
-
-
-
-
-//test of formating the date funciton.
-function testBetaFunction() {
-
-
- var ss = SpreadsheetApp.getActiveSpreadsheet();
-
-  var userSheet = ss.getSheetByName("Sam Nixon");
-  var currentTimeRow = userSheet.getLastRow();
-
-   //Need to put an error function in here for the first time a spreadsheet is generated.
- // if (currentTimeRow == 3) {
-   // Logger.log('correct error handling');
-   // return;
- // }
-
-  var initialTime;
-  var currentTime;
-  switch(currentTimeRow) {
-    case 3:
-      Logger.log('case 1')
+    if (array[i] === "Full name") {
+      array.splice(i, 1);
+      continue;
+    }
+    else if (array[i] == "") {
+      array.splice(i, 1);
+      continue;
+    }
+    else if (array[i] == null) {
+      array.splice(i , 1);
+      continue;
+    }
+    else {
       break;
-    case 5:
-      Logger.log('case 2');
-      initialTime = userSheet.getRange(3,1).setNumberFormat("00,000.0000000000").getValues();
-      currentTime = userSheet.getRange(currentTimeRow, 1).setNumberFormat("00,000.0000000000").getValues();
-      break;
-    default:
-      Logger.log('case 3');
-      initialTime = userSheet.getRange(3,1).getValues();
-      currentTime = userSheet.getRange(currentTimeRow, 1).setNumberFormat("00,000.0000000000").getValues();
+    }
   }
-
-
-  //var initialTime = userSheet.getRange(3,1).setNumberFormat("00,000.0000000000").getValues(); //stores as object
-  //setNumberFormat("00,000.0000000000")
-  //var currentTime = userSheet.getRange(currentTimeRow, 1).setNumberFormat("00,000.0000000000").getValues();
-
-  Logger.log(initialTime);
-  Logger.log(currentTimeRow);
-  Logger.log(currentTime);
-
-   //this codes needs to be put in the case arguments
-  var diffTime = currentTime[0][0] - initialTime[0][0];
-
-  Logger.log(diffTime);
-
-  var weighting = betaWeighting(diffTime);
-
-  Logger.log(weighting);
-
-
+  return array;
 }
 
+//removesDuplicates in an array
+function removesDuplicates(duplicateArray) {
 
-   function testSumRanking() {
-     var ss = SpreadsheetApp.getActiveSpreadsheet();
-     var targetSheet = ss.getSheetByName("Matt Jones");
+  for (var i = 0; i < duplicateArray.length; i ++) {
+    var count = 0;
+    for (var t = 0; t < duplicateArray.length; t ++) {
 
-     var attribution = targetSheet.getRange(8, 10).getValue();
-     Logger.log(attribution);
-     var vote = 1;
-     Logger.log(vote);
-     if (vote == "1" && attribution > 0) {
-       //vote is for the stock to go up
-       //stock movement is up
-       Logger.log('positive vote, positive movement');
-       return attribution;
-     }
-     else if (vote == "1" && attribution < 0) {
-       //vote is for the stock to go up
-       //stock  movement is down
-       Logger.log('positive vote, negative movement');
-       return;
-     }
-     else if (vote == "-1" && attribution > 0) {
-       //vote is for the stock market to go down
-       //stock movement is up
-       Logger.log('negative vote, positive movement');
-       return;
-     }
-     else if (vote == "-1" && attribution < 0) {
-       //vote is for the stock to go down
-       //stock market movement is down
-       Logger.log('negative vote, negative movenment');
-       return attribution;
-     }
-     else {
-       return;
-     }
+      if (duplicateArray[i] === duplicateArray[t]) {
+        //Logger.log(userNameValues[i] + '' + userNameValues[t] + ' special case');
+        count ++;
 
-
-
-
-
+        if (count >= 2) {
+          duplicateArray.splice(t,1);
         }
+      } else {
+        continue;
+      }
+    }
+  }
+  return duplicateArray;
+}
 
+//get the userNames and structures them in Array - targets the second column
+function getUsers(nameOfUsersArray) {
 
+  var sheet = ss.getSheetByName("Users Rankings Pull");
+  var lastRow = sheet.getLastRow();
+  var userNames = sheet.getRange(1,2,lastRow,1).getValues();
 
+  for (var i = 0; i < userNames.length; i ++) {
+    nameOfUsersArray.push(userNames[i][0]);
+  }
 
+  return nameOfUsersArray;
+}
 
+//Gets the name sheets and puts them into an Array (rather then an object)
+function getSheets(nameOfSheetArray) {
 
+  var nameOfSheets = ss.getSheets()
+  //var nameOfSheetArray = [];
 
-//grab data, loop through name and create new sheet if one does not exist
-               //In this case we will need to grab the names of the companies as well
-               //Insert new row or start the insert from the second column, not the first to put the time stamp in
-//Put entire row into spreadsheet with corresponding name (row with 0 and -1), remember the time stamp
-//Start generating the Tables, multiplication between HLookup &
-                //HLookup
-                      //first value is static in the current location
-                      //second value is static but dependent upon the size of the table which changes (therefore need to get the size)
-                      //row has a starting point which is depenent off the above cal, then increaes by 1 (count +-=1)
-                      //"FALSE"
-                //Risk Free Adjustement
-                       //"customRiskFreeAdjustment(num), num is depedent upon the date (or could somehow work with the count above, which might be better but not sure)
+  for (var i = 0; i < nameOfSheets.length; i++) {
+    nameOfSheetArray.push(ss.getSheets()[i].getName());
+  }
+  return nameOfSheetArray;
+}
