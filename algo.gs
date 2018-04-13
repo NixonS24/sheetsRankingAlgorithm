@@ -1,7 +1,7 @@
 //Global Declarations
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var userRankingsSheet = ss.getSheetByName("Users Rankings Pull");
-var maxColumns = userRankingsSheet.getMaxColumns();
+var maxColumns = userRankingsSheet.getMaxColumns(); //refactor to make more specific
 
 function createRanking() {
 
@@ -21,7 +21,48 @@ function createRanking() {
   createNewSheet(cleanedUsersArray3); //create new sheet for users, and adds first row
 
   copyValues(duplicateNameOfSheetArray); //copy values and rows into there corresponding sheets
+
+  getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
 }
+
+function getScore(array) {
+
+    for (name in array) {
+    var tempSheet = ss.getSheetByName(array[name]);
+
+    if (tempSheet == null) {
+      continue;
+    }
+
+    var lastRow = tempSheet.getLastRow();
+    var lastColumn = tempSheet.getLastColumn();
+    var rankingScore = 0;
+
+    for (var i = lastRow; i > 4; i -= 2) {
+      var sumRange = tempSheet.getRange(i, 1, 1, lastColumn).getValues();
+
+      for (var t = 0; t < sumRange[0].length; t++) {
+        if (sumRange[0][t] == "") {
+          continue;
+        }
+        else if (sumRange[0][t] == "#ERROR!") {
+          continue;
+        }
+        else if (sumRange[0][t] == "#N/A") {
+          continue;
+        }
+       else {
+        rankingScore += parseInt(sumRange[0][t]);
+       }
+      }
+    }
+  tempSheet.getRange(1,1).setValue(rankingScore);
+      Logger.log(rankingScore);
+  }
+}
+
+
+
 
 //Grabs the appropriate columns and copys them into their correct sheet (by Name)
 function copyValues(array) {
@@ -39,7 +80,7 @@ function copyValues(array) {
       voteValues[0].unshift(new Date());
       Logger.log(voteValues);
 
-      var lastRow = tempSheet.getLastRow() + 2;
+      var lastRow = tempSheet.getLastRow() + 1;
       tempSheet.getRange(lastRow, 1, 1, voteValues[0].length).setValues(voteValues);
       count ++;
 
@@ -59,16 +100,12 @@ function createRankingsColumn(row, tempSheet, voteValues) {
     else if (voteValues[0][i] == "1" || voteValues[0][i] == "-1") {
       var betaCol = i + 1;
       var targetCell = tempSheet.getRange(betaRow, betaCol);
-      targetCell.setValue(hLookupString(betaCol, tempSheet) + '*'  ); //this function brings in the BetaValue
+      targetCell.setValue(hLookupString(betaCol, tempSheet)); //this function brings in the BetaValue
     }
     else {
       continue;
     }
   }
-}
-
-function scalingFactor() {
-  var scaling = 'betaWeighting'
 }
 
 //fomats the BetaRow
