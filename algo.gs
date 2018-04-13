@@ -57,13 +57,31 @@ function createRankingsColumn(row, tempSheet, voteValues) {
       continue;
     }
     else if (voteValues[0][i] == "1" || voteValues[0][i] == "-1") {
-      var targetCell = tempSheet.getRange(betaRow,(i + 1));
-      targetCell.setValue('hello'); //this function brings in the BetaValue
+      var betaCol = i + 1;
+      var targetCell = tempSheet.getRange(betaRow, betaCol);
+      targetCell.setValue(hLookupString(betaCol, tempSheet) + '*'  ); //this function brings in the BetaValue
     }
     else {
       continue;
     }
   }
+}
+
+function scalingFactor() {
+  var scaling = 'betaWeighting'
+}
+
+//fomats the BetaRow
+function hLookupString(col, tempSheet) {
+  var colAsLetter = columnToLetter(col,tempSheet); //converts column number to letter
+
+  var lastColAsLetter = columnToLetter(userRankingsSheet.getLastColumn());
+  var lastRow = userRankingsSheet.getLastRow();
+  var maxRow = userRankingsSheet.getMaxRows();
+
+  var hLookup = ('=HLOOKUP(' + colAsLetter + '1 , CompanySheet!A1:' + lastColAsLetter + maxRow + ',' + lastRow + ', FALSE)');
+
+  return hLookup;
 }
 
 
@@ -169,4 +187,16 @@ function getSheets(nameOfSheetArray) {
     nameOfSheetArray.push(ss.getSheets()[i].getName());
   }
   return nameOfSheetArray;
+}
+
+//Converts a columnNumber to its corresponding Letter
+function columnToLetter(column) {
+ var temp, letter = '';
+ while (column > 0)
+ {
+   temp = (column - 1) % 26;
+   letter = String.fromCharCode(temp + 65) + letter;
+   column = (column - temp - 1) / 26;
+ }
+ return letter;
 }
