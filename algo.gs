@@ -23,6 +23,7 @@ function createRanking() {
   copyValues(duplicateNameOfSheetArray); //copy values and rows into there corresponding sheets
 
   getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
+  
 }
 
 function getScore(array) {
