@@ -1,7 +1,6 @@
 //Global Declarations
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var userRankingsSheet = ss.getSheetByName("Users Rankings Pull");
-var maxColumns = userRankingsSheet.getMaxColumns(); //refactor to make more specific
 
 function createRanking() {
 
@@ -23,7 +22,7 @@ function createRanking() {
   copyValues(duplicateNameOfSheetArray); //copy values and rows into there corresponding sheets
 
   getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
-  
+
 }
 
 function getScore(array) {
@@ -35,9 +34,11 @@ function getScore(array) {
       continue;
     }
 
-    var lastRow = tempSheet.getLastRow();
-    var lastColumn = tempSheet.getLastColumn();
-    var rankingScore = 0;
+      var lastRow = tempSheet.getLastRow();
+      var lastColumn = tempSheet.getLastColumn();
+      var rankingScore = 0;
+      var numberOfVotes = 0;
+      var scaledRankingScore;
 
     for (var i = lastRow; i > 2; i -= 2) {
       var sumRange = tempSheet.getRange(i, 1, 1, lastColumn).getValues();
@@ -54,20 +55,24 @@ function getScore(array) {
         }
        else {
         rankingScore += parseInt(sumRange[0][t]);
+        numberOfVotes += t;
        }
       }
     }
-  tempSheet.getRange(1,1).setValue(rankingScore);
-      Logger.log(rankingScore);
+      scaledRankingScore = powerFunction(numberOfVotes) * rankingScore;
+      tempSheet.getRange(1,1).setValue(testVar);
   }
 }
 
-
+function powerFunction(number) {
+  return Math.log(number);
+}
 
 
 //Grabs the appropriate columns and copys them into their correct sheet (by Name)
 function copyValues(array) {
   var count = 1;
+  var maxColumns = userRankingsSheet.getMaxColumns();
 
   for (name in array) {
     var tempSheet = ss.getSheetByName(array[name]);
