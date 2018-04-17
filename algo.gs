@@ -1,7 +1,6 @@
 //Global Declarations
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var userRankingsSheet = ss.getSheetByName("Users Rankings Pull");
-var maxColumns = userRankingsSheet.getMaxColumns();
 
 function createRanking() {
 
@@ -21,11 +20,103 @@ function createRanking() {
   createNewSheet(cleanedUsersArray3); //create new sheet for users, and adds first row
 
   copyValues(duplicateNameOfSheetArray); //copy values and rows into there corresponding sheets
+
+  getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
+
+  rankingTable(cleanedUsersArray2); //updates the ranking table
 }
+
+//Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
+function rankingTable(array) {
+  var rankingSheet = ss.getSheetByName('rankingTable')
+
+  if (rankingSheet == null) {
+    rankingSheet = ss.insertSheet().setName('rankingTable')
+  }
+  else {
+    rankingSheet.getDataRange().clear();
+  }
+
+  for (name in array) {
+   var tempSheet = ss.getSheetByName(array[name]);
+
+   if (tempSheet == null) {
+     continue;
+   }
+
+   var userScore = tempSheet.getRange(1,1).getValue();
+   var lastRow = rankingSheet.getLastRow() + 1;
+   rankingSheet.getRange(lastRow,1).setValue(array[name]);
+   rankingSheet.getRange(lastRow,2).setValue(userScore);
+
+  }
+  rankString();
+}
+
+//creates a the Google Function Rank in column three of the sheet Ranking Table
+function rankString() {
+
+ var rankingSheet = ss.getSheetByName('rankingTable');
+ var lastRowNumer = rankingSheet.getLastRow();
+
+ for (var i = 0; i < lastRowNumer; i ++) {
+   var sheetPosition = i + 1;
+   var name = ('=RANK(B'+ sheetPosition + ', B1:B' + lastRowNumer + ')');
+   rankingSheet.getRange(sheetPosition, 3).setValue(name);
+ }
+
+}
+
+//adds a number of columns together and adds the total to the top left hand corner
+function getScore(array) {
+
+    for (name in array) {
+    var tempSheet = ss.getSheetByName(array[name]);
+
+    if (tempSheet == null) {
+      continue;
+    }
+
+      var lastRow = tempSheet.getLastRow();
+      var lastColumn = tempSheet.getLastColumn();
+      var rankingScore = 0;
+      var numberOfVotes = 0;
+      var scaledRankingScore;
+
+    for (var i = lastRow; i > 2; i -= 2) {
+      var sumRange = tempSheet.getRange(i, 1, 1, lastColumn).getValues();
+
+      for (var t = 0; t < sumRange[0].length; t++) {
+        if (sumRange[0][t] == "") {
+          continue;
+        }
+        else if (sumRange[0][t] == "#ERROR!") {
+          continue;
+        }
+        else if (sumRange[0][t] == "#N/A") {
+          continue;
+        }
+       else {
+        rankingScore += parseInt(sumRange[0][t]);
+        numberOfVotes += t;
+       }
+      }
+    }
+      scaledRankingScore = powerFunction(numberOfVotes) * rankingScore; //scales the rank depenent on the number of votes
+      tempSheet.getRange(1,1).setValue(scaledRankingScore);
+  }
+}
+
+//fits a number to a simple logorithmic distribution
+function powerFunction(number) {
+  return Math.log(number);
+}
+
 
 //Grabs the appropriate columns and copys them into their correct sheet (by Name)
 function copyValues(array) {
   var count = 1;
+  var maxColumns = userRankingsSheet.getMaxColumns();
 
   for (name in array) {
     var tempSheet = ss.getSheetByName(array[name]);
@@ -39,7 +130,7 @@ function copyValues(array) {
       voteValues[0].unshift(new Date());
       Logger.log(voteValues);
 
-      var lastRow = tempSheet.getLastRow() + 2;
+      var lastRow = tempSheet.getLastRow() + 1;
       tempSheet.getRange(lastRow, 1, 1, voteValues[0].length).setValues(voteValues);
       count ++;
 
@@ -57,13 +148,27 @@ function createRankingsColumn(row, tempSheet, voteValues) {
       continue;
     }
     else if (voteValues[0][i] == "1" || voteValues[0][i] == "-1") {
-      var targetCell = tempSheet.getRange(betaRow,(i + 1));
-      targetCell.setValue('hello'); //this function brings in the BetaValue
+      var betaCol = i + 1;
+      var targetCell = tempSheet.getRange(betaRow, betaCol);
+      targetCell.setValue(hLookupString(betaCol, tempSheet)); //this function brings in the BetaValue
     }
     else {
       continue;
     }
   }
+}
+
+//fomats the BetaRow
+function hLookupString(col, tempSheet) {
+  var colAsLetter = columnToLetter(col,tempSheet); //converts column number to letter
+
+  var lastColAsLetter = columnToLetter(userRankingsSheet.getLastColumn());
+  var lastRow = userRankingsSheet.getLastRow();
+  var maxRow = userRankingsSheet.getMaxRows();
+
+  var hLookup = ('=HLOOKUP(' + colAsLetter + '1 , CompanySheet!A1:' + lastColAsLetter + maxRow + ',' + lastRow + ', FALSE)');
+
+  return hLookup;
 }
 
 
@@ -169,4 +274,16 @@ function getSheets(nameOfSheetArray) {
     nameOfSheetArray.push(ss.getSheets()[i].getName());
   }
   return nameOfSheetArray;
+}
+
+//Converts a columnNumber to its corresponding Letter
+function columnToLetter(column) {
+ var temp, letter = '';
+ while (column > 0)
+ {
+   temp = (column - 1) % 26;
+   letter = String.fromCharCode(temp + 65) + letter;
+   column = (column - temp - 1) / 26;
+ }
+ return letter;
 }
