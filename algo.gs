@@ -23,8 +23,37 @@ function createRanking() {
 
   getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
 
+  rankingTable(cleanedUsersArray); //updates the ranking table
 }
 
+//Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
+function rankingTable(array) {
+  var rankingSheet = ss.getSheetByName('rankingTable')
+
+  if (rankingSheet == null) {
+    rankingSheet = ss.insertSheet().setName('rankingTable')
+  }
+  else {
+    rankingSheet.getDataRange().clear();
+  }
+
+  for (name in array) {
+   var tempSheet = ss.getSheetByName(array[name]);
+
+   if (tempSheet == null) {
+     continue;
+   }
+
+   var userScore = tempSheet.getRange(1,1).getValue();
+   var lastRow = rankingSheet.getLastRow() + 1;
+   rankingSheet.getRange(lastRow,1).setValue(array[name]);
+   rankingSheet.getRange(lastRow,2).setValue(userScore);
+  }
+  //ranking the appropriae columns still to do
+
+}
+
+//adds a number of columns together and adds the total to the top left hand corner
 function getScore(array) {
 
     for (name in array) {
@@ -59,11 +88,12 @@ function getScore(array) {
        }
       }
     }
-      scaledRankingScore = powerFunction(numberOfVotes) * rankingScore;
-      tempSheet.getRange(1,1).setValue(testVar);
+      scaledRankingScore = powerFunction(numberOfVotes) * rankingScore; //scales the rank depenent on the number of votes
+      tempSheet.getRange(1,1).setValue(scaledRankingScore);
   }
 }
 
+//fits a number to a simple logorithmic distribution
 function powerFunction(number) {
   return Math.log(number);
 }
