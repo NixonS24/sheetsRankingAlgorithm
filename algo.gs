@@ -23,7 +23,7 @@ function createRanking() {
 
   getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
 
-  rankingTable(cleanedUsersArray); //updates the ranking table
+  rankingTable(cleanedUsersArray2); //updates the ranking table
 }
 
 //Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
@@ -48,8 +48,22 @@ function rankingTable(array) {
    var lastRow = rankingSheet.getLastRow() + 1;
    rankingSheet.getRange(lastRow,1).setValue(array[name]);
    rankingSheet.getRange(lastRow,2).setValue(userScore);
+
   }
-  //ranking the appropriae columns still to do
+  rankString();
+}
+
+//creates a the Google Function Rank in column three of the sheet Ranking Table
+function rankString() {
+
+ var rankingSheet = ss.getSheetByName('rankingTable');
+ var lastRowNumer = rankingSheet.getLastRow();
+
+ for (var i = 0; i < lastRowNumer; i ++) {
+   var sheetPosition = i + 1;
+   var name = ('=RANK(B'+ sheetPosition + ', B1:B' + lastRowNumer + ')');
+   rankingSheet.getRange(sheetPosition, 3).setValue(name);
+ }
 
 }
 
