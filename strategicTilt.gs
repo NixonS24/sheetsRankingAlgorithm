@@ -14,18 +14,19 @@ function createStrategicTile() {
   var mean = getAverage(getScoreArray); //get the mean of the data
 
   var standardDeviation = getStandardDeviation(duplicateGetScoreArray); //get the standard deviation of the data
+
+  var normalDistribution = standardise(duplicateGetScoreArray, mean, standardDeviation);
+  Logger.log(normalDistribution);
 }
 
-//get all the values in column 3, and puts them into an array
-function getScore(array) {
+function standardise(array, mean, stDEV) {
 
-  var lastRow = rankingTable.getLastRow();
-  var values = rankingTable.getRange(1,2,lastRow,1).getValues();
-
-  for (var i = 0; i < values.length; i++) {
-    array.push(values[i][0]);
+  var standardiseFigures = [];
+  for (var i = 0; i < array.length; i ++) {
+    var temp = (array[i] - mean)/stDEV;
+    standardiseFigures.push(temp);
   }
-  return array;
+  return standardiseFigures;
 }
 
 //get average of an array, need to deal with boolean here as not processing currently
@@ -53,6 +54,17 @@ function getAverage(data){
   return avg;
 }
 
+//get all the values in column 3, and puts them into an array
+function getScore(array) {
+
+  var lastRow = rankingTable.getLastRow();
+  var values = rankingTable.getRange(1,2,lastRow,1).getValues();
+
+  for (var i = 0; i < values.length; i++) {
+    array.push(values[i][0]);
+  }
+  return array;
+}
 
 
 
