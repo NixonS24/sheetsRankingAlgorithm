@@ -9,9 +9,12 @@ function createStrategicTile() {
 
   var getScoreArray = [];
   getScore(getScoreArray);
-  Logger.log(getScoreArray);
+
+  var mean = getAverage(getScoreArray);
+  Logger.log(mean);
 }
 
+//get all the values in column 3, and puts them into an array
 function getScore(array) {
 
   var lastRow = rankingTable.getLastRow();
@@ -22,6 +25,20 @@ function getScore(array) {
   }
   return array;
 }
+
+//get average of an array, need to deal with boolean here as not processing currently
+function getAverage(array) {
+
+  var sum = 0;
+
+  for (var i = 0; i < array.length; i++) {
+    sum += parseInt(array[i]);
+  }
+
+  var average = sum/array.length
+  return average;
+}
+
 
 
 
