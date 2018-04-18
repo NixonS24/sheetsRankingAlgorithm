@@ -14,6 +14,7 @@ function createRanking() {
   var cleanedUsersArray = removesDuplicates(nameOfUsersArray); //removes duplicates in our Users Array
 
   var cleanedUsersArray2 = removeSpecialCases(cleanedUsersArray); //removes special cases in Array, Full Name and ""
+  var duplicateUsersArray2 = cleanedUsersArray2.slice();
 
   var cleanedUsersArray3 = removeOverlap(nameOfSheetArray,cleanedUsersArray2); //removes names from array that already have a sheet
 
@@ -23,11 +24,11 @@ function createRanking() {
 
   getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
 
-  rankingTable(cleanedUsersArray2); //updates the ranking table
+  rankUser(duplicateUsersArray2); //updates the ranking table
 }
 
 //Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
-function rankingTable(array) {
+function rankUser(array) {
   var rankingSheet = ss.getSheetByName('rankingTable')
 
   if (rankingSheet == null) {
@@ -96,10 +97,34 @@ function getScore(array) {
         else if (sumRange[0][t] == "#N/A") {
           continue;
         }
-       else {
-        rankingScore += parseInt(sumRange[0][t]);
-        numberOfVotes += t;
-       }
+        else {
+          var vote = tempSheet.getRange(i - 1 , t + 1).getValue(); //to get the vote we need the row above and then the account for the difference in counting
+          numberOfVotes += 1;
+
+          if (vote == "1" && sumRange[0][t] > 0) {
+            rankingScore += parseInt(sumRange[0][t]);
+            //'positive vote, positive movement
+            continue;
+          }
+          else if (vote == '1' && sumRange[0][t] < 0) {
+            rankingScore += (parseInt(sumRange[0][t]) * -1);
+            //positive vote, negative movement
+            continue;
+          }
+          else if (vote == "-1" && sumRange[0][t] > 0) {
+            rankingScore += (parseInt(sumRange[0][t]) * -1);
+            continue;
+            //negative vote, positive movement
+          }
+          else if (vote == '1' && sumRange[0][t] < 0) {
+            rankingScore += parseInt(sumRange[0][t]);
+            continue;
+            //negative vote, negative movenment
+          }
+          else {
+            continue;
+          }
+        }
       }
     }
       scaledRankingScore = powerFunction(numberOfVotes) * rankingScore; //scales the rank depenent on the number of votes
@@ -163,7 +188,7 @@ function hLookupString(col, tempSheet) {
   var colAsLetter = columnToLetter(col,tempSheet); //converts column number to letter
 
   var lastColAsLetter = columnToLetter(userRankingsSheet.getLastColumn());
-  var lastRow = userRankingsSheet.getLastRow();
+  var lastRow = ss.getSheetByName('CompanySheet').getLastRow();
   var maxRow = userRankingsSheet.getMaxRows();
 
   var hLookup = ('=HLOOKUP(' + colAsLetter + '1 , CompanySheet!A1:' + lastColAsLetter + maxRow + ',' + lastRow + ', FALSE)');
