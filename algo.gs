@@ -14,6 +14,7 @@ function createRanking() {
   var cleanedUsersArray = removesDuplicates(nameOfUsersArray); //removes duplicates in our Users Array
 
   var cleanedUsersArray2 = removeSpecialCases(cleanedUsersArray); //removes special cases in Array, Full Name and ""
+  var duplicateUsersArray2 = cleanedUsersArray2.slice();
 
   var cleanedUsersArray3 = removeOverlap(nameOfSheetArray,cleanedUsersArray2); //removes names from array that already have a sheet
 
@@ -23,7 +24,7 @@ function createRanking() {
 
   getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
 
-  rankingTable(cleanedUsersArray2); //updates the ranking table
+  rankingTable(duplicateUsersArray2); //updates the ranking table
 }
 
 //Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
