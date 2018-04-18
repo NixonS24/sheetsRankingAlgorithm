@@ -9,9 +9,11 @@ function createStrategicTile() {
 
   var getScoreArray = [];
   getScore(getScoreArray);
+  var duplicateGetScoreArray = getScoreArray.slice()
 
-  var mean = getAverage(getScoreArray);
-  Logger.log(mean);
+  var mean = getAverage(getScoreArray); //get the mean of the data
+
+  var standardDeviation = getStandardDeviation(duplicateGetScoreArray); //get the standard deviation of the data
 }
 
 //get all the values in column 3, and puts them into an array
@@ -27,16 +29,28 @@ function getScore(array) {
 }
 
 //get average of an array, need to deal with boolean here as not processing currently
-function getAverage(array) {
+function getStandardDeviation(values){
+  var avg = getAverage(values);
 
-  var sum = 0;
+  var squareDiffs = values.map(function(value){
+    var diff = value - avg;
+    var sqrDiff = diff * diff;
+    return sqrDiff;
+  });
 
-  for (var i = 0; i < array.length; i++) {
-    sum += parseInt(array[i]);
-  }
+  var avgSquareDiff = getAverage(squareDiffs);
 
-  var average = sum/array.length
-  return average;
+  var stdDev = Math.sqrt(avgSquareDiff);
+  return stdDev;
+}
+
+function getAverage(data){
+  var sum = data.reduce(function(sum, value){
+    return sum + value;
+  }, 0);
+
+  var avg = sum / data.length;
+  return avg;
 }
 
 
