@@ -15,8 +15,29 @@ function createStrategicTile() {
 
   var standardDeviation = getStandardDeviation(duplicateGetScoreArray); //get the standard deviation of the data
 
-  var normalDistribution = standardise(duplicateGetScoreArray, mean, standardDeviation);
-  Logger.log(normalDistribution);
+  var normalDistribution = standardise(duplicateGetScoreArray, mean, standardDeviation); //standardised the distribution to standardised normal
+
+  var positiveBounds = getPositiveBounds(normalDistribution); //increase the values in the array to be bounded by negative 0 - this is mathmatically unsound but quick for MVP
+  Logger.log(positiveBounds);
+}
+
+//appreciates the values to makes the samllest number a zero.
+function getPositiveBounds(array) {
+
+  var positiveBounds = [];
+
+ Array.min = function( array ){
+    return Math.min.apply( Math, array );
+}; //don't really understand this but look to https://stackoverflow.com/questions/8934877/obtain-smallest-value-from-array-in-javascript
+
+  var minimum = Array.min(array);
+
+  for (var i = 0; i < array.length; i ++) {
+    Logger.log(array[i]);
+    var temp = array[i] - minimum;
+    positiveBounds.push(temp);
+  }
+  return positiveBounds;
 }
 
 function standardise(array, mean, stDEV) {
