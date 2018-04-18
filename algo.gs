@@ -24,11 +24,11 @@ function createRanking() {
 
   getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
 
-  rankingTable(duplicateUsersArray2); //updates the ranking table
+  rankUser(duplicateUsersArray2); //updates the ranking table
 }
 
 //Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
-function rankingTable(array) {
+function rankUser(array) {
   var rankingSheet = ss.getSheetByName('rankingTable')
 
   if (rankingSheet == null) {
@@ -188,7 +188,7 @@ function hLookupString(col, tempSheet) {
   var colAsLetter = columnToLetter(col,tempSheet); //converts column number to letter
 
   var lastColAsLetter = columnToLetter(userRankingsSheet.getLastColumn());
-  var lastRow = userRankingsSheet.getLastRow();
+  var lastRow = ss.getSheetByName('CompanySheet').getLastRow();
   var maxRow = userRankingsSheet.getMaxRows();
 
   var hLookup = ('=HLOOKUP(' + colAsLetter + '1 , CompanySheet!A1:' + lastColAsLetter + maxRow + ',' + lastRow + ', FALSE)');
