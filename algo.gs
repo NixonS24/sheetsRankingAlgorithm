@@ -96,10 +96,34 @@ function getScore(array) {
         else if (sumRange[0][t] == "#N/A") {
           continue;
         }
-       else {
-        rankingScore += parseInt(sumRange[0][t]);
-        numberOfVotes += t;
-       }
+        else {
+          var vote = tempSheet.getRange(i - 1 , t + 1).getValue(); //to get the vote we need the row above and then the account for the difference in counting
+          numberOfVotes += 1;
+
+          if (vote == "1" && sumRange[0][t] > 0) {
+            rankingScore += parseInt(sumRange[0][t]);
+            //'positive vote, positive movement
+            continue;
+          }
+          else if (vote == '1' && sumRange[0][t] < 0) {
+            rankingScore += (parseInt(sumRange[0][t]) * -1);
+            //positive vote, negative movement
+            continue;
+          }
+          else if (vote == "-1" && sumRange[0][t] > 0) {
+            rankingScore += (parseInt(sumRange[0][t]) * -1);
+            continue;
+            //negative vote, positive movement
+          }
+          else if (vote == '1' && sumRange[0][t] < 0) {
+            rankingScore += parseInt(sumRange[0][t]);
+            continue;
+            //negative vote, negative movenment
+          }
+          else {
+            continue;
+          }
+        }
       }
     }
       scaledRankingScore = powerFunction(numberOfVotes) * rankingScore; //scales the rank depenent on the number of votes
