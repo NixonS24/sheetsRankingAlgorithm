@@ -22,6 +22,8 @@ function createSheets(array) {
     }
     else {
       ss.insertSheet().setName(array[element]);
+      var sheet = ss.getSheetByName(array[element]);
+      sheet.deleteRows(100, 900);
     }
   }
 }
