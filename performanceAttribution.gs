@@ -9,11 +9,22 @@ function performanceAttribute() {
   var companyNames = [];
   getCompanyNames(companyNames); //get an array of Company Names
 
-//create spreadsheets
-  //createSheets();
+  createSheets(companyNames);
 
 }
 
+function createSheets(array) {
+
+  for (element in array) {
+    var testSheet = ss.getSheetByName(array[element]);
+    if (testSheet != null) {
+      continue
+    }
+    else {
+      ss.insertSheet().setName(array[element]);
+    }
+  }
+}
 //receives an arary, and push elements into it from an object
 function getCompanyNames(array) {
   var lastColumn = companySheet.getLastColumn();
