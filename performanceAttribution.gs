@@ -30,7 +30,7 @@ function createSheets(array) {
 //receives an arary, and push elements into it from an object
 function getCompanyNames(array) {
   var lastColumn = companySheet.getLastColumn();
-  var targetCompanyRow = companySheet.getRange(1,2,1, lastColumn).getValues();
+  var targetCompanyRow = companySheet.getRange(1,2,1, lastColumn - 1).getValues();
 
   for (var i = 0; i < targetCompanyRow[0].length; i ++) {
     array.push(targetCompanyRow[0][i]);
