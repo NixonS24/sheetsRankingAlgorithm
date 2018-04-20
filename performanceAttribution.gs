@@ -26,7 +26,7 @@ function createSheets(array) {
       var sheet = ss.getSheetByName(array[element]);
       sheet.deleteRows(100, 900);
       formatFirstRow(array[element]);
-      formatSecondRow(array[element);
+      formatSecondRow(array[element]);
       formatThirdRow(array[element]);
     }
   }
@@ -46,7 +46,7 @@ function formatThirdRow(companyName) {
   var tempSheet = ss.getSheetByName(companyName);
 
   for (i = 0; i < thirdRowValues.length; i++) {
-    tempSheet.getRange(2 , i + 1).setValue(thirdRowValues[i]);
+    tempSheet.getRange(3 , i + 1).setValue(thirdRowValues[i]);
   }
 }
 
