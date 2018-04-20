@@ -37,9 +37,9 @@ function updatedCompanyTables(array) {
       var returnAddition = ('=C' + currentRow + '- 1');
     }
 
-    var timeAddition = ('=IF(C' + currentRow + ':C' + futureRow  + '= "" , 0 , K' + previousRow + ' + 1)');
-    var riskFreeAddittion = ('=customRiskFreeAdjustment()');
-
+    var timeAddition = ('=IF(C' + currentRow + ':C' + futureRow  + '= "" , 0 , H' + previousRow + ' + 1)');
+    var standardDeviationAddition = ('=customRollingStDev(H' + currentRow + ',$F$2,1,$G$2,$F$3,5,$G$3)');
+    var sharpeRatioAddition = ('=(I' + currentRow + '-J' + currentRow + ')/K' + currentRow);
 
     //Array to be added
     var newRow = [];
@@ -50,17 +50,25 @@ function updatedCompanyTables(array) {
     newRow[4] = '';
     newRow[5] = '';
     newRow[6] = ''
-    newRow[7] = timeAddition;
+    newRow[7] = timeAddition
     newRow[8] = returnAddition;
-    newRow[9] = riskFreeAddittion;
-    newRow[10] =
+    newRow[9] = riskFreeAddittion();
+    newRow[10] = standardDeviationAddition;
+    newRow[11] = sharpeRatioAddition;
 
+    for (i = 0; i < newRow.length; i++) {
+      tempCompanyNameSheet.getRange(currentRow , i + 1).setValue(newRow[i]);
+    }
   }
+}
 
-  //create an Array
-    //create timeStamp
-    //insert price which needs to pulled from corresponding position on companySheet
-    //adjusted returns
+function riskFreeAddittion() {
+  var x = (1 + 1.5 / 100);
+  var y = 1 / 365;
+  var power = Math.pow(x, y) - 1;
+  return power;
+  //risk free is aassumed to be 1.5 for all time periods.
+  //Adjusted for time interval -
 }
 
 
