@@ -98,8 +98,8 @@ function formatThirdRow(companyName) {
   thirdRowValues[2] = '';
   thirdRowValues[3] = '';
   thirdRowValues[4] = 'Weekly';
-  thirdRowValues[5] = '=customWeeklyStandardDeviation';
-  thirdRowValues[6] = '=customWeeklyCount';
+  thirdRowValues[5] = '=customWeeklyStandardDeviation(C4:C.G3)';
+  thirdRowValues[6] = '=G2/5';
 
   var tempSheet = ss.getSheetByName(companyName);
 
@@ -115,7 +115,7 @@ function formatSecondRow(companyName) {
   secondRowValues[2] = '';
   secondRowValues[3] = '';
   secondRowValues[4] = 'Daily';
-  secondRowValues[5] = '=STDEV(C4:C)';
+  secondRowValues[5] = '=customDailyStandardDeviation(C4:C,G2)';
   secondRowValues[6] = '=Count(C4:C)';
 
   var tempSheet = ss.getSheetByName(companyName);

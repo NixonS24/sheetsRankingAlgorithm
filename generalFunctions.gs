@@ -1,4 +1,23 @@
 
+function customDailyStandardDeviation(values, count) {
+  if (count <= 7) {
+    return 2.15/100
+  }
+  else {
+    //To Do
+  }
+}
+
+function customWeeklyStandardDeviation(values, count) {
+  if (count <= 7) {
+    return 8.00/100
+  }
+  else {
+    //To Do
+  }
+}
+
+
 function betaWeighting(input) {
   return Math.log(input);
 
