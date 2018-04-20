@@ -21,6 +21,10 @@ function updateCompanySheet(array) {
   var count = 2;
   var companySheetLastRow = companySheet.getLastRow();
 
+  if (count = 2) {
+    timeStamp();
+  }
+
   if (companySheetLastRow < 3) {
     companySheetLastRow = 3;
   }
@@ -40,6 +44,11 @@ function updateCompanySheet(array) {
       count ++;
     }
   }
+}
+
+function timeStamp() {
+  var lastRow = companySheet.getLastRow() + 1;
+  companySheet.getRange(lastRow, 1).setValue(new Date());
 }
 
 function updateCompanyTables(array) {
