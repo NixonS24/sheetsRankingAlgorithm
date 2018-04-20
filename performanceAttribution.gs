@@ -17,15 +17,18 @@ function performanceAttribute() {
 
 function updateCompanyTables(array) {
 
+  var count = 0
+
   for (element in array) {
     var tempCompanyNameSheet = ss.getSheetByName(array[element]);
     if (tempCompanyNameSheet == null) {
       continue;
+      count ++;
     }
     else {
       var lastRow = tempCompanyNameSheet.getLastRow();
-      var companyPrice = companySheet.getRange(2, element + 2).getValue(); //array starts at 0 but prices at companySheet start at column 2
-
+      var companyPrice = companySheet.getRange(2, count + 2).getValue(); //array starts at 0 but prices at companySheet start at column 2
+      Logger.log(array[element] + element + companyPrice)
       //creating target columns for string formatting
       var previousRow = lastRow;
       var currentRow = lastRow + 1;
@@ -56,24 +59,16 @@ function updateCompanyTables(array) {
       newRow[6] = ''
       newRow[7] = timeAddition
       newRow[8] = returnAddition;
-      newRow[9] = riskFreeAddittion();
+      newRow[9] = '0.0000407915511135837';
       newRow[10] = standardDeviationAddition;
       newRow[11] = sharpeRatioAddition;
 
       for (i = 0; i < newRow.length; i++) {
         tempCompanyNameSheet.getRange(currentRow , i + 1).setValue(newRow[i]);
       }
+      count++;
     }
   }
-}
-
-function riskFreeAddittion() {
-  var x = (1 + 1.5 / 100);
-  var y = 1 / 365;
-  var power = Math.pow(x, y) - 1;
-  return power;
-  //risk free is aassumed to be 1.5 for all time periods.
-  //Adjusted for time interval -
 }
 
 
@@ -102,7 +97,7 @@ function formatSecondRow(companyName) {
   secondRowValues[2] = '';
   secondRowValues[3] = '';
   secondRowValues[4] = 'Daily';
-  secondRowValues[5] = '=customDailyStandardDeviation(C4:C,G2)';
+  secondRowValues[5] = '=If(G2 <= 7, 0.0215, STDEV(C4:C))';
   secondRowValues[6] = '=Count(C4:C)';
 
   var tempSheet = ss.getSheetByName(companyName);
