@@ -27,7 +27,26 @@ function createSheets(array) {
       sheet.deleteRows(100, 900);
       formatFirstRow(array[element]);
       formatSecondRow(array[element);
+      formatThirdRow(array[element]);
     }
+  }
+}
+
+function formatThirdRow(companyName) {
+
+  var thirdRowValues = [];
+  thirdRowValues[0] = '';
+  thirdRowValues[1] = '';
+  thirdRowValues[2] = '';
+  thirdRowValues[3] = '';
+  thirdRowValues[4] = 'Weekly';
+  thirdRowValues[5] = '=customWeeklyStandardDeviation';
+  thirdRowValues[6] = '=customWeeklyCount';
+
+  var tempSheet = ss.getSheetByName(companyName);
+
+  for (i = 0; i < thirdRowValues.length; i++) {
+    tempSheet.getRange(2 , i + 1).setValue(thirdRowValues[i]);
   }
 }
 
@@ -38,8 +57,8 @@ function formatSecondRow(companyName) {
   secondRowValues[2] = '';
   secondRowValues[3] = '';
   secondRowValues[4] = 'Daily';
-  secondRowValues[5] = '=STDEV(C3:C)';
-  secondRowValues[6] = '=Count(C3:C)';
+  secondRowValues[5] = '=STDEV(C4:C)';
+  secondRowValues[6] = '=Count(C4:C)';
 
   var tempSheet = ss.getSheetByName(companyName);
 
