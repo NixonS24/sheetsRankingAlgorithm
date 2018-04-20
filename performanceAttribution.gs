@@ -8,9 +8,59 @@ function performanceAttribute() {
 
   var companyNames = [];
   getCompanyNames(companyNames); //get an array of Company Names
+  //var duplicateCompanyNames = companyName.slice();
 
   createSheets(companyNames); //creates sheets from the Company Names if they don't exist
 
+  updateCompanyTables(companyNames);
+}
+
+function updatedCompanyTables(array) {
+
+  for (element in array) {
+    var tempCompanyNameSheet = ss.getSheetByName(array[element]);
+    var lastRow = tempCompanyNameSheet.getLastRow();
+    var companyPrice = companySheet.getRange(2, element + 2).getValue(); //array starts at 0 but prices at companySheet start at column 2
+
+    //creating target columns for string formatting
+    var previousRow = lastRow;
+    var currentRow = lastRow + 1;
+    var futureRow = lastRow + 2;
+
+    //fomating strings
+    if (lastRow <= 3) {
+      var adjustedReturnAddition = ''; //for for Row, there will be no way to calculate returns
+      var returnAddition = '';
+    }
+    else {
+      var adjustedReturnAddition = ('=B' + currentRow + '/' + 'B' + previousRow);
+      var returnAddition = ('=C' + currentRow + '- 1');
+    }
+
+    var timeAddition = ('=IF(C' + currentRow + ':C' + futureRow  + '= "" , 0 , K' + previousRow + ' + 1)');
+    var riskFreeAddittion = ('=customRiskFreeAdjustment()');
+
+
+    //Array to be added
+    var newRow = [];
+    newRow[0] = new Date();
+    newRow[1] = companyPrice;
+    newRow[2] = adjustedReturnAddition;
+    newRow[3] = '';
+    newRow[4] = '';
+    newRow[5] = '';
+    newRow[6] = ''
+    newRow[7] = timeAddition;
+    newRow[8] = returnAddition;
+    newRow[9] = riskFreeAddittion;
+    newRow[10] =
+
+  }
+
+  //create an Array
+    //create timeStamp
+    //insert price which needs to pulled from corresponding position on companySheet
+    //adjusted returns
 }
 
 
