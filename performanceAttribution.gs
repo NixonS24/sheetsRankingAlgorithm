@@ -15,49 +15,54 @@ function performanceAttribute() {
   updateCompanyTables(companyNames);
 }
 
-function updatedCompanyTables(array) {
+function updateCompanyTables(array) {
 
   for (element in array) {
     var tempCompanyNameSheet = ss.getSheetByName(array[element]);
-    var lastRow = tempCompanyNameSheet.getLastRow();
-    var companyPrice = companySheet.getRange(2, element + 2).getValue(); //array starts at 0 but prices at companySheet start at column 2
-
-    //creating target columns for string formatting
-    var previousRow = lastRow;
-    var currentRow = lastRow + 1;
-    var futureRow = lastRow + 2;
-
-    //fomating strings
-    if (lastRow <= 3) {
-      var adjustedReturnAddition = ''; //for for Row, there will be no way to calculate returns
-      var returnAddition = '';
+    if (tempCompanyNameSheet == null) {
+      continue;
     }
     else {
-      var adjustedReturnAddition = ('=B' + currentRow + '/' + 'B' + previousRow);
-      var returnAddition = ('=C' + currentRow + '- 1');
-    }
+      var lastRow = tempCompanyNameSheet.getLastRow();
+      var companyPrice = companySheet.getRange(2, element + 2).getValue(); //array starts at 0 but prices at companySheet start at column 2
 
-    var timeAddition = ('=IF(C' + currentRow + ':C' + futureRow  + '= "" , 0 , H' + previousRow + ' + 1)');
-    var standardDeviationAddition = ('=customRollingStDev(H' + currentRow + ',$F$2,1,$G$2,$F$3,5,$G$3)');
-    var sharpeRatioAddition = ('=(I' + currentRow + '-J' + currentRow + ')/K' + currentRow);
+      //creating target columns for string formatting
+      var previousRow = lastRow;
+      var currentRow = lastRow + 1;
+      var futureRow = lastRow + 2;
 
-    //Array to be added
-    var newRow = [];
-    newRow[0] = new Date();
-    newRow[1] = companyPrice;
-    newRow[2] = adjustedReturnAddition;
-    newRow[3] = '';
-    newRow[4] = '';
-    newRow[5] = '';
-    newRow[6] = ''
-    newRow[7] = timeAddition
-    newRow[8] = returnAddition;
-    newRow[9] = riskFreeAddittion();
-    newRow[10] = standardDeviationAddition;
-    newRow[11] = sharpeRatioAddition;
+      //fomating strings
+      if (lastRow <= 2) {
+        var adjustedReturnAddition = ''; //for for Row, there will be no way to calculate returns
+        var returnAddition = '';
+      }
+      else {
+        var adjustedReturnAddition = ('=B' + currentRow + '/' + 'B' + previousRow);
+        var returnAddition = ('=C' + currentRow + '- 1');
+      }
 
-    for (i = 0; i < newRow.length; i++) {
-      tempCompanyNameSheet.getRange(currentRow , i + 1).setValue(newRow[i]);
+      var timeAddition = ('=IF(C' + currentRow + ':C' + futureRow  + '= "" , 0 , H' + futureRow + ' + 1)');
+      var standardDeviationAddition = ('=F2');
+      var sharpeRatioAddition = ('=(I' + currentRow + '-J' + currentRow + ')/K' + currentRow);
+
+      //Array to be added
+      var newRow = [];
+      newRow[0] = new Date();
+      newRow[1] = companyPrice;
+      newRow[2] = adjustedReturnAddition;
+      newRow[3] = '';
+      newRow[4] = '';
+      newRow[5] = '';
+      newRow[6] = ''
+      newRow[7] = timeAddition
+      newRow[8] = returnAddition;
+      newRow[9] = riskFreeAddittion();
+      newRow[10] = standardDeviationAddition;
+      newRow[11] = sharpeRatioAddition;
+
+      for (i = 0; i < newRow.length; i++) {
+        tempCompanyNameSheet.getRange(currentRow , i + 1).setValue(newRow[i]);
+      }
     }
   }
 }
@@ -85,28 +90,10 @@ function createSheets(array) {
       sheet.deleteRows(100, 900);
       formatFirstRow(array[element]);
       formatSecondRow(array[element]);
-      formatThirdRow(array[element]);
     }
   }
 }
 
-function formatThirdRow(companyName) {
-
-  var thirdRowValues = [];
-  thirdRowValues[0] = '';
-  thirdRowValues[1] = '';
-  thirdRowValues[2] = '';
-  thirdRowValues[3] = '';
-  thirdRowValues[4] = 'Weekly';
-  thirdRowValues[5] = '=customWeeklyStandardDeviation(C4:C.G3)';
-  thirdRowValues[6] = '=G2/5';
-
-  var tempSheet = ss.getSheetByName(companyName);
-
-  for (i = 0; i < thirdRowValues.length; i++) {
-    tempSheet.getRange(3 , i + 1).setValue(thirdRowValues[i]);
-  }
-}
 
 function formatSecondRow(companyName) {
   var secondRowValues = [];
