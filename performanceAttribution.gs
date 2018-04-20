@@ -8,11 +8,38 @@ function performanceAttribute() {
 
   var companyNames = [];
   getCompanyNames(companyNames); //get an array of Company Names
-  //var duplicateCompanyNames = companyName.slice();
 
   createSheets(companyNames); //creates sheets from the Company Names if they don't exist
 
-  updateCompanyTables(companyNames);
+  updateCompanyTables(companyNames); //pull the current prices into there corresponding sheets and update
+
+  updateCompanySheet(companyNames);
+}
+
+function updateCompanySheet(array) {
+
+  var count = 2;
+  var companySheetLastRow = companySheet.getLastRow();
+
+  if (companySheetLastRow < 3) {
+    companySheetLastRow = 3;
+  }
+  Logger.log(companySheetLastRow);
+
+  for (element in array) {
+    var nameSheet = ss.getSheetByName(array[element]);
+
+    if (nameSheet == null) {
+      continue;
+      count ++;
+    }
+    else {
+      var nameSheetLastRow = nameSheet.getLastRow();
+      var nameSheetData = nameSheet.getRange(nameSheetLastRow, 12).getValue()
+      companySheet.getRange(companySheetLastRow + 1, count).setValue(nameSheetData);
+      count ++;
+    }
+  }
 }
 
 function updateCompanyTables(array) {
@@ -97,7 +124,7 @@ function formatSecondRow(companyName) {
   secondRowValues[2] = '';
   secondRowValues[3] = '';
   secondRowValues[4] = 'Daily';
-  secondRowValues[5] = '=If(G2 <= 7, 0.0215, STDEV(C4:C))';
+  secondRowValues[5] = '=If(G2 <= 7, 0.0215, STDEV(C4:C))'; //this will force us to have a speical companyUpdate when st.dev is calculated differently
   secondRowValues[6] = '=Count(C4:C)';
 
   var tempSheet = ss.getSheetByName(companyName);
