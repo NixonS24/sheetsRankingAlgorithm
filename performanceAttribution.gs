@@ -26,11 +26,29 @@ function createSheets(array) {
       var sheet = ss.getSheetByName(array[element]);
       sheet.deleteRows(100, 900);
       formatFirstRow(array[element]);
+      formatSecondRow(array[element);
     }
   }
 }
 
-function formatFirstRow(name) {
+function formatSecondRow(companyName) {
+  var secondRowValues = [];
+  secondRowValues[0] = '';
+  secondRowValues[1] = '';
+  secondRowValues[2] = '';
+  secondRowValues[3] = '';
+  secondRowValues[4] = 'Daily';
+  secondRowValues[5] = '=STDEV(C3:C)';
+  secondRowValues[6] = '=Count(C3:C)';
+
+  var tempSheet = ss.getSheetByName(companyName);
+
+  for (i = 0; i < secondRowValues.length; i++) {
+    tempSheet.getRange(2 , i + 1).setValue(secondRowValues[i]);
+  }
+}
+
+function formatFirstRow(companyName) {
 
   var firstRowValues = [];
   firstRowValues[0] = 'Time Stamp';
@@ -46,7 +64,7 @@ function formatFirstRow(name) {
   firstRowValues[10] = 'St.Dev';
   firstRowValues[11] = 'Sharpe ratio'
 
-  var tempSheet = ss.getSheetByName(name);
+  var tempSheet = ss.getSheetByName(companyName);
 
   for (i = 0; i < firstRowValues.length; i++) {
     tempSheet.getRange(1 , i + 1).setValue(firstRowValues[i]);
