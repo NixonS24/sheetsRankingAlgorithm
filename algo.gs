@@ -41,8 +41,8 @@ function updatePreviousRankings() {
   var rankingSheet = ss.getSheetByName('rankingTable');
   var lastColumn = rankingSheet.getLastColumn();
 
-  for (i = 0; i < rankingMovement.length; i ++) {
-    rankingSheet.getRange(i + 1 , lastColumn + 1).setValue(rankingMovement[i]);
+  for (i = 2; i < rankingMovement.length; i ++) {
+    rankingSheet.getRange(i + 1 , lastColumn).setValue(rankingMovement[i]);
   }
 }
 
@@ -50,11 +50,11 @@ function updatePreviousRankings() {
 function compareScores(array) {
 
   var lastRow1 = rankingSheet.getLastRow();
-  var currentRankingValues = rankingTableSheet.getRange(1,1,lastRow1,3).getValues();
+  var currentRankingValues = rankingSheet.getRange(3,1,lastRow1,3).getValues();
 
   var previousRankingSheet = ss.getSheetByName('previousRankingTable');
   var lastRow2 = previousRankingSheet.getLastRow();
-  var previousRankingValues = previousRankingSheet.getRange(1,2,lastRow2,3).getValues();
+  var previousRankingValues = previousRankingSheet.getRange(3,1,lastRow2,3).getValues();
 
   for (i = 0; i < lastRow1; i++) {
     for (j = 0; j < lastRow2; j ++) {
