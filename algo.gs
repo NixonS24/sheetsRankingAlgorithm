@@ -29,46 +29,7 @@ function createRanking() {
 
   rankUser(duplicateUsersArray2); //updates the ranking table
 
-  updatePreviousRankings();
-}
-
-//Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
-function rankUser(array) {
-
-  if (rankingSheet == null) {
-    rankingSheet = ss.insertSheet().setName('rankingTable')
-  }
-  else {
-    rankingSheet.getDataRange().clear();
-  }
-
-  for (name in array) {
-   var tempSheet = ss.getSheetByName(array[name]);
-
-   if (tempSheet == null) {
-     continue;
-   }
-
-   var userScore = tempSheet.getRange(1,1).getValue();
-   var lastRow = rankingSheet.getLastRow() + 1;
-   rankingSheet.getRange(lastRow,1).setValue(array[name]);
-   rankingSheet.getRange(lastRow,2).setValue(userScore);
-
-  }
-  rankString();
-}
-
-//creates a the Google Function Rank in column three of the sheet Ranking Table
-function rankString() {
-
- var lastRowNumer = rankingSheet.getLastRow();
-
- for (var i = 0; i < lastRowNumer; i ++) {
-   var sheetPosition = i + 1;
-   var name = ('=RANK(B'+ sheetPosition + ', B1:B' + lastRowNumer + ')');
-   rankingSheet.getRange(sheetPosition, 3).setValue(name);
- }
-
+  updatePreviousRankings(); //creates the previous days rankings
 }
 
 //Update PreviousDaysRankings
@@ -105,6 +66,58 @@ function compareScores(array) {
   }
 }
 
+//Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
+function rankUser(array) {
+
+  if (rankingSheet == null) {
+    rankingSheet = ss.insertSheet().setName('rankingTable')
+  }
+  else {
+    rankingSheet.getDataRange().clear();
+  }
+
+  for (name in array) {
+   var tempSheet = ss.getSheetByName(array[name]);
+
+   if (tempSheet == null) {
+     continue;
+   }
+
+   var userScore = tempSheet.getRange(1,1).getValue();
+
+   rankingSheet.getRange(1,1).setValue(new Date());
+   var secondRowValues = [];
+   secondRowValues[0] = 'user_id';
+   secondRowValues[1] = 'full_name';
+   secondRowValues[2] = 'rank';
+   secondRowValues[3] = 'Power Vote';
+   secondRowValues[4] = 'rank_Status';
+
+   for (i = 0; i < secondRowValues.length; i++) {
+     rankingSheet.getRange(2, i + 1).setValue(secondRowValues[i]);
+   }
+
+   var lastRow = rankingSheet.getLastRow() + 1;
+   rankingSheet.getRange(lastRow,1).setValue(array[name]);
+   rankingSheet.getRange(lastRow,2).setValue(userScore);
+
+  }
+  rankString();
+}
+
+//creates a the Google Function Rank in column three of the sheet Ranking Table
+function rankString() {
+
+ var lastRowNumer = rankingSheet.getLastRow();
+
+ for (var i = 2; i < lastRowNumer; i ++) {
+   var sheetPosition = i + 1;
+   var name = ('=RANK(B'+ sheetPosition + ', B1:B' + lastRowNumer + ')');
+   rankingSheet.getRange(sheetPosition, 3).setValue(name);
+ }
+
+}
+
 //replicates data and chucks it into a spreadsheet in new colum
 function storeValues() {
 
@@ -118,8 +131,7 @@ function storeValues() {
   }
 
   previousRankingTable.insertColumns(1,lastColumn + 2);
-  previousRankingTable.getRange(1,1).setValue(new Date());
-  dataRange.copyTo(previousRankingTable.getRange("B1"), SpreadsheetApp.CopyPasteType.PASTE_VALUES);
+  dataRange.copyTo(previousRankingTable.getRange("A1"), SpreadsheetApp.CopyPasteType.PASTE_VALUES);
 }
 
 //adds a number of columns together and adds the total to the top left hand corner
