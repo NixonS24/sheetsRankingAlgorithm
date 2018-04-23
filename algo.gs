@@ -91,7 +91,12 @@ function rankUser(array) {
 
    rankingSheet.getRange(lastRow,1).setValue(userId);
    rankingSheet.getRange(lastRow,2).setValue(array[name]);
-   rankingSheet.getRange(lastRow,4).setValue(userScore);
+
+   if (userScore == '#NUM!') {
+     rankingSheet.getRange(lastRow,4).setValue('0');
+    } else {
+      rankingSheet.getRange(lastRow,4).setValue(userScore);
+    }
 
   }
   rankString(); //ranks current days peformance
