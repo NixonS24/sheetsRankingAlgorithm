@@ -24,6 +24,8 @@ function createRanking() {
 
   getScoreLeft(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
 
+  updatePreviousRankings(); //update previous days table
+
   rankUser(duplicateUsersArray2); //updates the ranking table
 }
 
@@ -65,6 +67,20 @@ function rankString() {
    var name = ('=RANK(B'+ sheetPosition + ', B1:B' + lastRowNumer + ')');
    rankingSheet.getRange(sheetPosition, 3).setValue(name);
  }
+
+}
+
+//Update PreviousDaysRankings
+function updatePreviousRankings() {
+  var rankingSheet = ss.getSheetByName('rankingTable');
+  var previousRankingTable = ss.getSheetByName('previousRankingTable');
+
+  if (rankingSheet == null) {
+    return;
+  }
+
+  previousDaysRankinksValues = rankingSheet.getDataRange().copyTo(previousRankingTable.getRange("A1"), SpreadsheetApp.CopyPasteType.PASTE_VALUES);
+
 
 }
 
