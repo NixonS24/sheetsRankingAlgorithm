@@ -72,18 +72,21 @@ function rankString() {
 
 //Update PreviousDaysRankings
 function updatePreviousRankings() {
+
   var rankingSheet = ss.getSheetByName('rankingTable');
+  var dataRange = rankingSheet.getDataRange();
   var previousRankingTable = ss.getSheetByName('previousRankingTable');
+  var lastColumn = previousRankingTable.getLastColumn();
 
   if (rankingSheet == null) {
     return;
   }
 
-  previousDaysRankinksValues = rankingSheet.getDataRange().copyTo(previousRankingTable.getRange("A1"), SpreadsheetApp.CopyPasteType.PASTE_VALUES);
+  previousRankingTable.insertColumns(1,lastColumn + 1);
+  dataRange.copyTo(previousRankingTable.getRange("A1"), SpreadsheetApp.CopyPasteType.PASTE_VALUES);
 
 
 }
-
 //adds a number of columns together and adds the total to the top left hand corner
 function getScoreLeft(array) {
 
