@@ -73,11 +73,31 @@ function rankString() {
 //Update PreviousDaysRankings
 function updatePreviousRankings() {
 
+  storeValues(); //copies current days rankingsTable, and puts them previousRankingTable
+
+  var rankingTableSheet = ss.getSheetByName('rankingTable');
+  var lastRow = rankingTableSheet.getLastRow();
+  var currentRankingValues = rankingTableSheet.getRange(1,1,lastRow,3).getValues();
+
+  var previousRankingSheet = ss.getSheetByName('previousRankingTable');
+  var lastRow = previousRankingSheet.getLastRow();
+  var previousRankingValues = previousRankingSheet.getRange(1,2,lastRow,3).getValues();
+
+  Logger.log(currentRankingValues);
+  Logger.log(previousRankingValues);
+
+
+}
+
+
+//replicates data and chucks it into a spreadsheet in new colum
+function storeValues() {
+
   var rankingSheet = ss.getSheetByName('rankingTable');
   var dataRange = rankingSheet.getDataRange();
   var lastColumn = rankingSheet.getLastColumn();
-  var previousRankingTable = ss.getSheetByName('previousRankingTable');
 
+  var previousRankingTable = ss.getSheetByName('previousRankingTable');
 
   if (rankingSheet == null) {
     return;
