@@ -83,26 +83,34 @@ function rankUser(array) {
      continue;
    }
 
+   createBaseFormat();
+
+   var userId = tempSheet.getRange(2,2).getValue();
    var userScore = tempSheet.getRange(1,1).getValue();
-
-   rankingSheet.getRange(1,1).setValue(new Date());
-   var secondRowValues = [];
-   secondRowValues[0] = 'user_id';
-   secondRowValues[1] = 'full_name';
-   secondRowValues[2] = 'rank';
-   secondRowValues[3] = 'Power Vote';
-   secondRowValues[4] = 'rank_Status';
-
-   for (i = 0; i < secondRowValues.length; i++) {
-     rankingSheet.getRange(2, i + 1).setValue(secondRowValues[i]);
-   }
-
    var lastRow = rankingSheet.getLastRow() + 1;
-   rankingSheet.getRange(lastRow,1).setValue(array[name]);
-   rankingSheet.getRange(lastRow,2).setValue(userScore);
+
+   rankingSheet.getRange(lastRow,1).setValue(userId);
+   rankingSheet.getRange(lastRow,2).setValue(array[name]);
+   rankingSheet.getRange(lastRow,4).setValue(userScore);
 
   }
-  rankString();
+  rankString(); //ranks current days peformance
+}
+
+//General Formating of Spreadsheet
+function createBaseFormat() {
+
+  rankingSheet.getRange(1,1).setValue(new Date());
+  var secondRowValues = [];
+  secondRowValues[0] = 'user_id';
+  secondRowValues[1] = 'full_name';
+  secondRowValues[2] = 'rank';
+  secondRowValues[3] = 'Power Vote';
+  secondRowValues[4] = 'rank_Status';
+
+  for (i = 0; i < secondRowValues.length; i++) {
+    rankingSheet.getRange(2, i + 1).setValue(secondRowValues[i]);
+  }
 }
 
 //creates a the Google Function Rank in column three of the sheet Ranking Table
@@ -112,7 +120,7 @@ function rankString() {
 
  for (var i = 2; i < lastRowNumer; i ++) {
    var sheetPosition = i + 1;
-   var name = ('=RANK(B'+ sheetPosition + ', B1:B' + lastRowNumer + ')');
+   var name = ('=RANK(D'+ sheetPosition + ', D1:D' + lastRowNumer + ')');
    rankingSheet.getRange(sheetPosition, 3).setValue(name);
  }
 
