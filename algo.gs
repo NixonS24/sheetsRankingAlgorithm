@@ -1,6 +1,7 @@
 //Global Declarations
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var userRankingsSheet = ss.getSheetByName("Users Rankings Pull");
+var rankingSheet = ss.getSheetByName('rankingTable');
 
 function createRanking() {
 
@@ -22,14 +23,51 @@ function createRanking() {
 
   copyValues(duplicateNameOfSheetArray); //copy values and rows into there corresponding sheets
 
-  getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
+  getScoreLeft(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
+
+  storeValues(); //copies current days rankingsTable, and puts them previousRankingTable
 
   rankUser(duplicateUsersArray2); //updates the ranking table
+
+  updatePreviousRankings(); //creates the previous days rankings
+}
+
+//Update PreviousDaysRankings
+function updatePreviousRankings() {
+
+  var rankingMovement = []
+  compareScores(rankingMovement); //creates of rankingmovement scores
+
+  var rankingSheet = ss.getSheetByName('rankingTable');
+  var lastColumn = rankingSheet.getLastColumn();
+
+  for (i = 2; i < rankingMovement.length; i ++) {
+    rankingSheet.getRange(i + 1 , lastColumn).setValue(rankingMovement[i]);
+  }
+}
+
+//Compares two columns in two different Javasciript Object, then subtract the second third columns from each other
+function compareScores(array) {
+
+  var lastRow1 = rankingSheet.getLastRow();
+  var currentRankingValues = rankingSheet.getRange(3,1,lastRow1,3).getValues();
+
+  var previousRankingSheet = ss.getSheetByName('previousRankingTable');
+  var lastRow2 = previousRankingSheet.getLastRow();
+  var previousRankingValues = previousRankingSheet.getRange(3,1,lastRow2,3).getValues();
+
+  for (i = 0; i < lastRow1; i++) {
+    for (j = 0; j < lastRow2; j ++) {
+      if (currentRankingValues[i][0] == previousRankingValues[j][0]) {
+        var temp = parseInt(previousRankingValues[j][2]) - parseInt(currentRankingValues[i][2]);
+        array.push(temp);
+      }
+    }
+  }
 }
 
 //Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
 function rankUser(array) {
-  var rankingSheet = ss.getSheetByName('rankingTable')
 
   if (rankingSheet == null) {
     rankingSheet = ss.insertSheet().setName('rankingTable')
@@ -45,31 +83,72 @@ function rankUser(array) {
      continue;
    }
 
+   createBaseFormat();
+
+   var userId = tempSheet.getRange(2,2).getValue();
    var userScore = tempSheet.getRange(1,1).getValue();
    var lastRow = rankingSheet.getLastRow() + 1;
-   rankingSheet.getRange(lastRow,1).setValue(array[name]);
-   rankingSheet.getRange(lastRow,2).setValue(userScore);
+
+   rankingSheet.getRange(lastRow,1).setValue(userId);
+   rankingSheet.getRange(lastRow,2).setValue(array[name]);
+
+   if (userScore == '#NUM!') {
+     rankingSheet.getRange(lastRow,4).setValue('0');
+    } else {
+      rankingSheet.getRange(lastRow,4).setValue(userScore);
+    }
 
   }
-  rankString();
+  rankString(); //ranks current days peformance
+}
+
+//General Formating of Spreadsheet
+function createBaseFormat() {
+
+  rankingSheet.getRange(1,1).setValue(new Date());
+  var secondRowValues = [];
+  secondRowValues[0] = 'user_id';
+  secondRowValues[1] = 'full_name';
+  secondRowValues[2] = 'rank';
+  secondRowValues[3] = 'Power Vote';
+  secondRowValues[4] = 'rank_Status';
+
+  for (i = 0; i < secondRowValues.length; i++) {
+    rankingSheet.getRange(2, i + 1).setValue(secondRowValues[i]);
+  }
 }
 
 //creates a the Google Function Rank in column three of the sheet Ranking Table
 function rankString() {
 
- var rankingSheet = ss.getSheetByName('rankingTable');
  var lastRowNumer = rankingSheet.getLastRow();
 
- for (var i = 0; i < lastRowNumer; i ++) {
+ for (var i = 2; i < lastRowNumer; i ++) {
    var sheetPosition = i + 1;
-   var name = ('=RANK(B'+ sheetPosition + ', B1:B' + lastRowNumer + ')');
+   var name = ('=RANK(D'+ sheetPosition + ', D1:D' + lastRowNumer + ')');
    rankingSheet.getRange(sheetPosition, 3).setValue(name);
  }
 
 }
 
+//replicates data and chucks it into a spreadsheet in new colum
+function storeValues() {
+
+  var dataRange = rankingSheet.getDataRange();
+  var lastColumn = rankingSheet.getLastColumn();
+
+  var previousRankingTable = ss.getSheetByName('previousRankingTable');
+
+  if (rankingSheet == null) {
+    return;
+  }
+
+  previousRankingTable.insertColumns(1,lastColumn + 2);
+  dataRange.copyTo(previousRankingTable.getRange("A1"), SpreadsheetApp.CopyPasteType.PASTE_VALUES);
+}
+
 //adds a number of columns together and adds the total to the top left hand corner
-function getScore(array) {
+function getScoreLeft(array) {
 
     for (name in array) {
     var tempSheet = ss.getSheetByName(array[name]);
@@ -102,22 +181,22 @@ function getScore(array) {
           numberOfVotes += 1;
 
           if (vote == "1" && sumRange[0][t] > 0) {
-            rankingScore += parseInt(sumRange[0][t]);
+            rankingScore += parseFloat(sumRange[0][t]);
             //'positive vote, positive movement
             continue;
           }
           else if (vote == '1' && sumRange[0][t] < 0) {
-            rankingScore += (parseInt(sumRange[0][t]) * -1);
+            rankingScore += parseFloat(sumRange[0][t]);
             //positive vote, negative movement
             continue;
           }
           else if (vote == "-1" && sumRange[0][t] > 0) {
-            rankingScore += (parseInt(sumRange[0][t]) * -1);
+            rankingScore += (parseFloat(sumRange[0][t]) * -1);
             continue;
             //negative vote, positive movement
           }
-          else if (vote == '1' && sumRange[0][t] < 0) {
-            rankingScore += parseInt(sumRange[0][t]);
+          else if (vote == '-1' && sumRange[0][t] < 0) {
+            rankingScore += (parseFloat(sumRange[0][t]) * -1);
             continue;
             //negative vote, negative movenment
           }
@@ -153,8 +232,6 @@ function copyValues(array) {
     else {
       var voteValues = userRankingsSheet.getRange(count, 1, 1, maxColumns).getValues();
       voteValues[0].unshift(new Date());
-      Logger.log(voteValues);
-
       var lastRow = tempSheet.getLastRow() + 1;
       tempSheet.getRange(lastRow, 1, 1, voteValues[0].length).setValues(voteValues);
       count ++;
@@ -261,7 +338,6 @@ function removesDuplicates(duplicateArray) {
     for (var t = 0; t < duplicateArray.length; t ++) {
 
       if (duplicateArray[i] === duplicateArray[t]) {
-        //Logger.log(userNameValues[i] + '' + userNameValues[t] + ' special case');
         count ++;
 
         if (count >= 2) {

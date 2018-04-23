@@ -4,26 +4,6 @@ var companySheet = ss.getSheetByName('CompanySheet');
 
 //
 function performanceAttribute() {
-<<<<<<< HEAD
-
-  var companyNames = [];
-  getCompanyNames(companyNames); //get an array of Company Names
-
-//create spreadsheets
-  //createSheets();
-
-}
-
-//receives an arary, and push elements into it from an object
-function getCompanyNames(array) {
-  var lastColumn = companySheet.getLastColumn();
-  var targetCompanyRow = companySheet.getRange(1,2,1, lastColumn).getValues();
-
-  for (var i = 0; i < targetCompanyRow[0].length; i ++) {
-    array.push(targetCompanyRow[0][i]);
-  }
-
-=======
 
   var companyNames = [];
   getCompanyNames(companyNames); //get an array of Company Names
@@ -193,6 +173,5 @@ function getCompanyNames(array) {
     array.push(targetCompanyRow[0][i]);
   }
 
->>>>>>> 9c451970d07587dc85cba0562a4dc17fd6666e85
   return array;
 }
