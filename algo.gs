@@ -75,20 +75,31 @@ function updatePreviousRankings() {
 
   storeValues(); //copies current days rankingsTable, and puts them previousRankingTable
 
-  var rankingTableSheet = ss.getSheetByName('rankingTable');
-  var lastRow = rankingTableSheet.getLastRow();
-  var currentRankingValues = rankingTableSheet.getRange(1,1,lastRow,3).getValues();
-
-  var previousRankingSheet = ss.getSheetByName('previousRankingTable');
-  var lastRow = previousRankingSheet.getLastRow();
-  var previousRankingValues = previousRankingSheet.getRange(1,2,lastRow,3).getValues();
-
-  Logger.log(currentRankingValues);
-  Logger.log(previousRankingValues);
-
+  var rankingMovement = []
+  compareScores(rankingMovement);
+  Logger.log(rankingMovement);
 
 }
 
+//Compares two columns in two different Javasciript Object, then subtract the second third columns from each other
+function compareScores(array) {
+  var rankingTableSheet = ss.getSheetByName('rankingTable');
+  var lastRow1 = rankingTableSheet.getLastRow();
+  var currentRankingValues = rankingTableSheet.getRange(1,1,lastRow1,3).getValues();
+
+  var previousRankingSheet = ss.getSheetByName('previousRankingTable');
+  var lastRow2 = previousRankingSheet.getLastRow();
+  var previousRankingValues = previousRankingSheet.getRange(1,2,lastRow2,3).getValues();
+
+  for (i = 0; i < lastRow1; i++) {
+    for (j = 0; j < lastRow2; j ++) {
+      if (currentRankingValues[i][0] == previousRankingValues[j][0]) {
+        var temp = parseInt(previousRankingValues[j][2]) - parseInt(currentRankingValues[i][2]);
+        array.push(temp);
+      }
+    }
+  }
+}
 
 //replicates data and chucks it into a spreadsheet in new colum
 function storeValues() {
