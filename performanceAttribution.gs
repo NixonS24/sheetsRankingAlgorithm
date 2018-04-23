@@ -1,8 +1,10 @@
+//This typically needs to be run at the same time each day to ensure consistency of standard deviaiton.
+
 //Global Declarations
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var companySheet = ss.getSheetByName('CompanySheet');
 
-//
+//Create Sharpe ratio and the put into centralised sheet
 function performanceAttribute() {
 
   var companyNames = [];
@@ -10,11 +12,12 @@ function performanceAttribute() {
 
   createSheets(companyNames); //creates sheets from the Company Names if they don't exist
 
-  updateCompanyTables(companyNames); //pull the current prices into there corresponding sheets and update
+  updateCompanyTables(companyNames); //pull the current prices into their corresponding sheets and update
 
-  updateCompanySheet(companyNames);
+  updateCompanySheet(companyNames); //pull the sharpe ratio in their corresponding places into a sheet called 'Company Sheet'
 }
 
+//grab specific values from different sheets and puts them into one centralised sheet
 function updateCompanySheet(array) {
 
   var count = 2;
@@ -50,6 +53,7 @@ function timeStamp() {
   companySheet.getRange(lastRow, 1).setValue(new Date());
 }
 
+//
 function updateCompanyTables(array) {
 
   var count = 0
@@ -94,7 +98,7 @@ function updateCompanyTables(array) {
       newRow[6] = ''
       newRow[7] = timeAddition
       newRow[8] = returnAddition;
-      newRow[9] = '0.0000407915511135837';
+      newRow[9] = '0.0000407915511135837'; //risk free if 1.5% divided into daily figure
       newRow[10] = standardDeviationAddition;
       newRow[11] = sharpeRatioAddition;
 
@@ -106,7 +110,7 @@ function updateCompanyTables(array) {
   }
 }
 
-
+//creates new sheet from an array with specific formating
 function createSheets(array) {
 
   for (element in array) {
@@ -124,7 +128,7 @@ function createSheets(array) {
   }
 }
 
-
+//create format of second row
 function formatSecondRow(companyName) {
   var secondRowValues = [];
   secondRowValues[0] = '';
@@ -142,6 +146,7 @@ function formatSecondRow(companyName) {
   }
 }
 
+//create format of firstRow
 function formatFirstRow(companyName) {
 
   var firstRowValues = [];
@@ -164,7 +169,8 @@ function formatFirstRow(companyName) {
     tempSheet.getRange(1 , i + 1).setValue(firstRowValues[i]);
   }
 }
-//receives an arary, and push elements into it from an object
+
+//receives an array from row 1, and pushes elements in array
 function getCompanyNames(array) {
   var lastColumn = companySheet.getLastColumn();
   var targetCompanyRow = companySheet.getRange(1,2,1, lastColumn - 1).getValues();

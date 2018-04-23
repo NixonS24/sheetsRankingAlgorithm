@@ -3,6 +3,7 @@ var ss = SpreadsheetApp.getActiveSpreadsheet();
 var userRankingsSheet = ss.getSheetByName("Users Rankings Pull");
 var rankingSheet = ss.getSheetByName('rankingTable');
 
+//This functions takes a sheets of votes and matches them to stock performance and returns an attribution figure
 function createRanking() {
 
   var nameOfSheetArray = [];

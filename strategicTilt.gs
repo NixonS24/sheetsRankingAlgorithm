@@ -1,10 +1,8 @@
-//creates the number of votes per user depending on number of users, and performance
-
 //Global Declarations
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var rankingTable = ss.getSheetByName("rankingTable");
 
-
+//This function takes a list of values corresponding to user performance and normalaises them, and retunrs there corresponding voting power (bounded by 0)
 function createStrategicTile() {
 
   var getScoreArray = [];
@@ -51,7 +49,7 @@ function getVotingPower(array) {
   return voting;
 }
 
-//appreciates the values to makes the samllest number a zero.
+//appreciates the values to makes the smallest in the dataset 0.
 function getPositiveBounds(array) {
 
   var positiveBounds = [];
@@ -69,6 +67,7 @@ function getPositiveBounds(array) {
   return positiveBounds;
 }
 
+//standadise dataset into normal distribution
 function standardise(array, mean, stDEV) {
 
   var standardiseFigures = [];
@@ -95,6 +94,7 @@ function getStandardDeviation(values){
   return stdDev;
 }
 
+//return the average from a dataset
 function getAverage(data){
   var sum = data.reduce(function(sum, value){
     return sum + value;
@@ -115,17 +115,3 @@ function getScore(array) {
   }
   return array;
 }
-
-
-
-//var numberOfUSer = count number of users
-//find means of the data
-//find standard devation of the data
-
-//standardise the data - (value - mean)/ standard deviation
-
-//increase the values of the figure by the value of the lowest figure.
-//Sum that figure = aAUC
-
-
-//voting power = numberOfUers/aAUC * individual standardised data
