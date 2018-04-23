@@ -22,7 +22,7 @@ function createRanking() {
 
   copyValues(duplicateNameOfSheetArray); //copy values and rows into there corresponding sheets
 
-  getScore(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
+  getScoreLeft(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
 
   rankUser(duplicateUsersArray2); //updates the ranking table
 }
@@ -69,7 +69,7 @@ function rankString() {
 }
 
 //adds a number of columns together and adds the total to the top left hand corner
-function getScore(array) {
+function getScoreLeft(array) {
 
     for (name in array) {
     var tempSheet = ss.getSheetByName(array[name]);
@@ -102,22 +102,22 @@ function getScore(array) {
           numberOfVotes += 1;
 
           if (vote == "1" && sumRange[0][t] > 0) {
-            rankingScore += parseInt(sumRange[0][t]);
+            rankingScore += parseFloat(sumRange[0][t]);
             //'positive vote, positive movement
             continue;
           }
           else if (vote == '1' && sumRange[0][t] < 0) {
-            rankingScore += (parseInt(sumRange[0][t]) * -1);
+            rankingScore += (parseFloat(sumRange[0][t]) * -1);
             //positive vote, negative movement
             continue;
           }
           else if (vote == "-1" && sumRange[0][t] > 0) {
-            rankingScore += (parseInt(sumRange[0][t]) * -1);
+            rankingScore += (parseFloat(sumRange[0][t]) * -1);
             continue;
             //negative vote, positive movement
           }
-          else if (vote == '1' && sumRange[0][t] < 0) {
-            rankingScore += parseInt(sumRange[0][t]);
+          else if (vote == '-1' && sumRange[0][t] < 0) {
+            rankingScore += parseFloat(sumRange[0][t]);
             continue;
             //negative vote, negative movenment
           }
@@ -153,8 +153,6 @@ function copyValues(array) {
     else {
       var voteValues = userRankingsSheet.getRange(count, 1, 1, maxColumns).getValues();
       voteValues[0].unshift(new Date());
-      Logger.log(voteValues);
-
       var lastRow = tempSheet.getLastRow() + 1;
       tempSheet.getRange(lastRow, 1, 1, voteValues[0].length).setValues(voteValues);
       count ++;
@@ -261,7 +259,6 @@ function removesDuplicates(duplicateArray) {
     for (var t = 0; t < duplicateArray.length; t ++) {
 
       if (duplicateArray[i] === duplicateArray[t]) {
-        //Logger.log(userNameValues[i] + '' + userNameValues[t] + ' special case');
         count ++;
 
         if (count >= 2) {
