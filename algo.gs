@@ -24,9 +24,11 @@ function createRanking() {
 
   getScoreLeft(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
 
-  updatePreviousRankings(); //update previous days table
+  storeValues(); //copies current days rankingsTable, and puts them previousRankingTable
 
   rankUser(duplicateUsersArray2); //updates the ranking table
+
+  updatePreviousRankings();
 }
 
 //Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
@@ -73,12 +75,15 @@ function rankString() {
 //Update PreviousDaysRankings
 function updatePreviousRankings() {
 
-  storeValues(); //copies current days rankingsTable, and puts them previousRankingTable
-
   var rankingMovement = []
-  compareScores(rankingMovement);
-  Logger.log(rankingMovement);
+  compareScores(rankingMovement); //creates of rankingmovement scores
 
+  var rankingSheet = ss.getSheetByName('rankingTable');
+  var lastColumn = rankingSheet.getLastColumn();
+
+  for (i = 0; i < rankingMovement.length; i ++) {
+    rankingSheet.getRange(i + 1 , lastColumn + 1).setValue(rankingMovement[i]);
+  }
 }
 
 //Compares two columns in two different Javasciript Object, then subtract the second third columns from each other
