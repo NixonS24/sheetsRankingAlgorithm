@@ -186,7 +186,7 @@ function getScoreLeft(array) {
             continue;
           }
           else if (vote == '1' && sumRange[0][t] < 0) {
-            rankingScore += (parseFloat(sumRange[0][t]) * -1);
+            rankingScore += parseFloat(sumRange[0][t]);
             //positive vote, negative movement
             continue;
           }
@@ -196,7 +196,7 @@ function getScoreLeft(array) {
             //negative vote, positive movement
           }
           else if (vote == '-1' && sumRange[0][t] < 0) {
-            rankingScore += parseFloat(sumRange[0][t]);
+            rankingScore += (parseFloat(sumRange[0][t]) * -1);
             continue;
             //negative vote, negative movenment
           }
