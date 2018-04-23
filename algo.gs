@@ -1,6 +1,7 @@
 //Global Declarations
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var userRankingsSheet = ss.getSheetByName("Users Rankings Pull");
+var rankingSheet = ss.getSheetByName('rankingTable');
 
 function createRanking() {
 
@@ -33,7 +34,6 @@ function createRanking() {
 
 //Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
 function rankUser(array) {
-  var rankingSheet = ss.getSheetByName('rankingTable')
 
   if (rankingSheet == null) {
     rankingSheet = ss.insertSheet().setName('rankingTable')
@@ -61,7 +61,6 @@ function rankUser(array) {
 //creates a the Google Function Rank in column three of the sheet Ranking Table
 function rankString() {
 
- var rankingSheet = ss.getSheetByName('rankingTable');
  var lastRowNumer = rankingSheet.getLastRow();
 
  for (var i = 0; i < lastRowNumer; i ++) {
@@ -88,8 +87,8 @@ function updatePreviousRankings() {
 
 //Compares two columns in two different Javasciript Object, then subtract the second third columns from each other
 function compareScores(array) {
-  var rankingTableSheet = ss.getSheetByName('rankingTable');
-  var lastRow1 = rankingTableSheet.getLastRow();
+
+  var lastRow1 = rankingSheet.getLastRow();
   var currentRankingValues = rankingTableSheet.getRange(1,1,lastRow1,3).getValues();
 
   var previousRankingSheet = ss.getSheetByName('previousRankingTable');
@@ -109,7 +108,6 @@ function compareScores(array) {
 //replicates data and chucks it into a spreadsheet in new colum
 function storeValues() {
 
-  var rankingSheet = ss.getSheetByName('rankingTable');
   var dataRange = rankingSheet.getDataRange();
   var lastColumn = rankingSheet.getLastColumn();
 
