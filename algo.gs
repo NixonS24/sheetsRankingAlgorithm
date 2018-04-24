@@ -42,29 +42,33 @@ function updatePreviousRankings() {
   var rankingSheet = ss.getSheetByName('rankingTable');
   var lastColumn = rankingSheet.getLastColumn();
 
-  for (i = 2; i < rankingMovement.length; i ++) {
-    rankingSheet.getRange(i + 1 , lastColumn).setValue(rankingMovement[i]);
+  for (i = 0; i < rankingMovement.length; i ++) {
+    rankingSheet.getRange(i + 3 , lastColumn).setValue(rankingMovement[i]);
   }
 }
 
 //Compares two columns in two different Javasciript Object, then subtract the second third columns from each other
 function compareScores(array) {
 
-  var lastRow1 = rankingSheet.getLastRow();
-  var currentRankingValues = rankingSheet.getRange(3,1,lastRow1,3).getValues();
+  var lastRow1 = rankingSheet.getLastRow() - 2;
+  var currentRankingValues = rankingSheet.getRange(3,2,lastRow1,2).getValues();
+  Logger.log(currentRankingValues);
 
   var previousRankingSheet = ss.getSheetByName('previousRankingTable');
-  var lastRow2 = previousRankingSheet.getLastRow();
-  var previousRankingValues = previousRankingSheet.getRange(3,1,lastRow2,3).getValues();
+  var lastRow2 = previousRankingSheet.getLastRow() - 2;
+  var previousRankingValues = previousRankingSheet.getRange(3,2,lastRow2,2).getValues();
+  Logger.log(previousRankingValues);
 
   for (i = 0; i < lastRow1; i++) {
     for (j = 0; j < lastRow2; j ++) {
       if (currentRankingValues[i][0] == previousRankingValues[j][0]) {
-        var temp = parseInt(previousRankingValues[j][2]) - parseInt(currentRankingValues[i][2]);
+        var temp = parseInt(previousRankingValues[j][1]) - parseInt(currentRankingValues[i][1]);
         array.push(temp);
+        Logger.log(array);
       }
     }
   }
+  return array;
 }
 
 //Grabs number in top left corner and sheet and then puts that in sheet called rankingTable
