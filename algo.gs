@@ -111,7 +111,7 @@ function createBaseFormat() {
   secondRowValues[0] = 'user_id';
   secondRowValues[1] = 'full_name';
   secondRowValues[2] = 'rank';
-  secondRowValues[3] = 'Power Vote';
+  secondRowValues[3] = 'power_vote';
   secondRowValues[4] = 'rank_Status';
 
   for (i = 0; i < secondRowValues.length; i++) {
