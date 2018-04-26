@@ -24,10 +24,10 @@ function createStrategicTile() {
 
 //push an array into last empty column
 function writeValues(array) {
-  var lastColumn = rankingTable.getLastColumn() + 1;
+  var lastColumn = rankingTable.getLastColumn() - 1;
 
   for (i = 0 ; i < array.length; i++ ) {
-    rankingTable.getRange(i + 1 , lastColumn).setValue(array[i]);
+    rankingTable.getRange(i + 3 , lastColumn).setValue(array[i]);
   }
 }
 
@@ -35,8 +35,8 @@ function writeValues(array) {
 function getVotingPower(array) {
 
   var voting = [];
-  var lastRow = rankingTable.getLastRow();
-  var sum = 0
+  var lastRow = rankingTable.getLastRow() - 2;
+  var sum = 0;
 
   for (var i = 0; i < array.length; i++) {
     sum += array[i];
@@ -107,8 +107,9 @@ function getAverage(data){
 //get all the values in column 3, and puts them into an array
 function getScore(array) {
 
-  var lastRow = rankingTable.getLastRow();
-  var values = rankingTable.getRange(1,2,lastRow,1).getValues();
+  var lastRow = rankingTable.getLastRow() - 2;
+
+  var values = rankingTable.getRange(3,4,lastRow).getValues();
 
   for (var i = 0; i < values.length; i++) {
     array.push(values[i][0]);
