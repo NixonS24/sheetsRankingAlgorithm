@@ -33,4 +33,6 @@ Looks at previous results, and calculates change in ranks.
 
 strageticTile.gs
 
-This looks at the ranking score, puts it into a normal distribution and the allocate a number of votes that sum to the amount of users. This is bounded by on the negative by 0, and positive side by amount of users. 
+This looks at the ranking score, puts it into a normal distribution and the allocate a number of votes that sum to the amount of users. This is bounded by on the negative by 0, and positive side by amount of users.
+
+In future will backtest this distribution, to determine what is most effective in maximising returns. Early conjecture indicates that it is more likely to be Lotka's Law (fat start narrow tail).
