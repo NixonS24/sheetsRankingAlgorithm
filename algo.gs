@@ -44,7 +44,7 @@ function updatePreviousRankings() {
   var rankingSheet = ss.getSheetByName('rankingTable');
   var lastColumn = rankingSheet.getLastColumn();
 
-  for (i = 0; i < test2.length; i ++) {
+  for (i = 0; i < binaryTransfo.length; i ++) {
     rankingSheet.getRange(i + 3 , lastColumn).setValue(binaryTransfo[i]);
   }
 }
