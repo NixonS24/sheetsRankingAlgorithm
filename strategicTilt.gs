@@ -27,7 +27,7 @@ function writeValues(array) {
   var lastColumn = rankingTable.getLastColumn() - 1;
 
   for (i = 0 ; i < array.length; i++ ) {
-    rankingTable.getRange(i + 3 , lastColumn).setValue(array[i]);
+    rankingTable.getRange(i + 3 , lastColumn).setValue(Math.round(array[i]));
   }
 }
 
