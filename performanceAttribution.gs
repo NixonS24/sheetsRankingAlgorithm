@@ -7,6 +7,11 @@ var companySheet = ss.getSheetByName('CompanySheet');
 //Create Sharpe ratio and the put into centralised sheet
 function performanceAttribute() {
 
+  var companyFormula = []
+  getCompanyFormula(companyFormula); //get an array of Company Formual
+
+  write(companyFormula); //copies the formual into the row forcing it to recalculate
+
   var companyNames = [];
   getCompanyNames(companyNames); //get an array of Company Names
 
@@ -180,4 +185,22 @@ function getCompanyNames(array) {
   }
 
   return array;
+}
+
+//recives an empty array, get a list of formula from row 2 and pushes into an ara
+function getCompanyFormula(array) {
+  var lastColumn = companySheet.getLastColumn();
+  var targetCompanyValues = companySheet.getRange(2,2,1 , lastColumn - 1).getFormulas();
+
+  for (var i = 0; i < targetCompanyValues[0].length; i++) {
+    array.push(targetCompanyValues[0][i])
+  }
+  return array;
+}
+
+//write an array to row 2, of company sheet
+function write(array) {
+  for (i = 0; i < array.length; i++) {
+    companySheet.getRange(2, i + 2).setValue(array[i])
+  }
 }

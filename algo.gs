@@ -39,36 +39,61 @@ function updatePreviousRankings() {
   var rankingMovement = []
   compareScores(rankingMovement); //creates of rankingmovement scores
 
+  var binaryTransfo = makeBinary(rankingMovement); //just conform it to -1 and positive 1 so it is intereacts more easily with system
+  //This can potential be refactored out if we want the whole number
   var rankingSheet = ss.getSheetByName('rankingTable');
   var lastColumn = rankingSheet.getLastColumn();
 
-  for (i = 0; i < rankingMovement.length; i ++) {
-    rankingSheet.getRange(i + 3 , lastColumn).setValue(rankingMovement[i]);
+  for (i = 0; i < binaryTransfo.length; i ++) {
+    rankingSheet.getRange(i + 3 , lastColumn).setValue(binaryTransfo[i]);
   }
+}
+
+//takes a range of numbers and turns them into 1,0,-1
+function makeBinary(array) {
+
+  var newArray = [];
+  for (i = 0; i < array.length; i ++) {
+    Logger.log(array[i])
+    if (array[i] >= 1) {
+      newArray.push('1');
+    }
+    if (array[i] <= -1){
+      newArray.push('-1');
+    }
+    else {
+      Logger.log(array[i]);
+      newArray.push('0');
+    }
+  }
+  return newArray;
 }
 
 //Compares two columns in two different Javasciript Object, then subtract the second third columns from each other
 function compareScores(array) {
 
+  //Necessary declaration to target the Current Rankings
   var lastRow1 = rankingSheet.getLastRow() - 2;
   var currentRankingValues = rankingSheet.getRange(3,2,lastRow1,2).getValues();
-  Logger.log(currentRankingValues);
 
+  //Necessary delclaration to target Previous Rankings
   var previousRankingSheet = ss.getSheetByName('previousRankingTable');
   var lastRow2 = previousRankingSheet.getLastRow() - 2;
   var previousRankingValues = previousRankingSheet.getRange(3,2,lastRow2,2).getValues();
-  Logger.log(previousRankingValues);
 
   for (i = 0; i < lastRow1; i++) {
-    for (j = 0; j < lastRow2; j ++) {
-      if (currentRankingValues[i][0] == previousRankingValues[j][0]) {
-        var temp = parseInt(previousRankingValues[j][1]) - parseInt(currentRankingValues[i][1]);
-        array.push(temp);
-        Logger.log(array);
-      }
-    }
-  }
-  return array;
+   for (j = 0; j < lastRow2; j ++) {
+     if (currentRankingValues[i][0] == previousRankingValues[j][0]) {
+       var temp = parseInt(previousRankingValues[j][1]) - parseInt(currentRankingValues[i][1]);
+       array.push(temp);
+       break;
+     }
+     if (j == 3) {
+       array.push('0'); //push 0 into correct place,
+     }
+   }
+ }
+ return array;
 }
 
 //Grabs number in top left corner and sheet and then puts that in sheet called rankingTable

@@ -26,8 +26,14 @@ function createStrategicTile() {
 function writeValues(array) {
   var lastColumn = rankingTable.getLastColumn() - 1;
 
+  //This round function is added to intereact with other systems, and can be removed as necessary
   for (i = 0 ; i < array.length; i++ ) {
-    rankingTable.getRange(i + 3 , lastColumn).setValue(array[i]);
+    if (array[i] <= 1) {
+      rankingTable.getRange(i + 3 , lastColumn).setValue('1');
+    }
+    else {
+      rankingTable.getRange(i + 3 , lastColumn).setValue(Math.round(array[i]));
+    }
   }
 }
 
