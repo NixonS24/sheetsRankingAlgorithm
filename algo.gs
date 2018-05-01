@@ -317,6 +317,7 @@ function createNewSheet(array) {
     else {
       ss.insertSheet().setName(array[element]);
       var sheet = ss.getSheetByName(array[element]);
+      sheet.deleteRows(100, 900); //delete rows to save space
       sheet.getRange(1, 2, 1, stockNames[0].length).setValues(stockNames);
     }
   }
