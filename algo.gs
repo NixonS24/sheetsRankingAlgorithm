@@ -88,7 +88,7 @@ function compareScores(array) {
        array.push(temp);
        break;
      }
-     if (j == 3) {
+     if (j == lastRow2 - 1) {
        array.push('0'); //push 0 into correct place,
      }
    }
