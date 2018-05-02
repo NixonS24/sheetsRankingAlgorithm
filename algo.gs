@@ -264,6 +264,7 @@ function copyValues(array) {
       voteValues[0].unshift(new Date());
       var lastRow = tempSheet.getLastRow() + 1;
       tempSheet.getRange(lastRow, 1, 1, voteValues[0].length).setValues(voteValues);
+      tempSheet.getRange(lastRow + 1, 3).setValue(array[name]);
       count ++;
 
       createRankingsColumn(lastRow, tempSheet, voteValues); //fills the rankings column witht the appropriate measure
