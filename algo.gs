@@ -54,16 +54,17 @@ function makeBinary(array) {
 
   var newArray = [];
   for (i = 0; i < array.length; i ++) {
-    Logger.log(array[i])
     if (array[i] >= 1) {
       newArray.push('1');
+      continue;
     }
     if (array[i] <= -1){
       newArray.push('-1');
+      continue;
     }
     else {
-      Logger.log(array[i]);
       newArray.push('0');
+      continue;
     }
   }
   return newArray;
