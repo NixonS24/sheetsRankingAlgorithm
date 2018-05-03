@@ -79,12 +79,12 @@ function compareScores(array) {
 
   //Necessary declaration to target the Current Rankings
   var lastRow1 = rankingSheet.getLastRow() - 2;
-  var currentRankingValues = rankingSheet.getRange(3,2,lastRow1,2).getValues();
+  var currentRankingValues = rankingSheet.getRange(3,1,lastRow1,2).getValues();
 
   //Necessary delclaration to target Previous Rankings
   var previousRankingSheet = ss.getSheetByName('previousRankingTable');
   var lastRow2 = previousRankingSheet.getLastRow() - 2;
-  var previousRankingValues = previousRankingSheet.getRange(3,2,lastRow2,2).getValues();
+  var previousRankingValues = previousRankingSheet.getRange(3,1,lastRow2,2).getValues();
 
   for (i = 0; i < lastRow1; i++) {
    for (j = 0; j < lastRow2; j ++) {
