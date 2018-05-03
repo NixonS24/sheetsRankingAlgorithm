@@ -35,25 +35,7 @@ function createRanking() {
 }
 
 //creates the column that looks at the funds value
-function fundValue() {
 
-  var rankingTable = ss.getSheetByName('rankingTable');
-
-  //Get powerVote number in an object
-  var lastRow = rankingTable.getLastRow() - 2;
-  var powerVote = rankingTable.getRange(3,4,lastRow,1).getValues();
-
-  Logger.log(powerVote)
-  Logger.log(powerVote[2][0]);
-  array = [];
-
-  for (var i = 0; i < lastRow; i ++) {
-    array.push(powerVote[i][0] * 100000 / lastRow);
-   rankingTable.getRange(i + 3, 6).setValue(array[i]);
-  }
-
-  Logger.log(array);
-}
 
 //Update PreviousDaysRankings
 function updatePreviousRankings() {
