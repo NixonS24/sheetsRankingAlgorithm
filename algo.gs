@@ -9,17 +9,17 @@ function createRanking() {
   var nameOfSheetArray = [];
   getSheets(nameOfSheetArray); //returns array with name of Sheets
 
-  var nameOfUsersArray = [];
-  getUsers(nameOfUsersArray); //returns array with name of users
-  var duplicateNameOfSheetArray = nameOfUsersArray.slice();
+  var nameOfIDArray = [];
+  getID(nameOfIDArray); //returns array with name of users
+  var duplicateNameOfSheetArray = nameOfIDArray.slice();
 
-  var cleanedUsersArray = removesDuplicates(nameOfUsersArray); //removes duplicates in our Users Array
+  var cleanedUsersArray = removesDuplicates(nameOfIDArray); //removes duplicates in our Users Array
 
   var cleanedUsersArray2 = removeSpecialCases(cleanedUsersArray); //removes special cases in Array, Full Name and ""
   var duplicateUsersArray2 = cleanedUsersArray2.slice();
 
   var cleanedUsersArray3 = removeOverlap(nameOfSheetArray,cleanedUsersArray2); //removes names from array that already have a sheet
-
+  Logger.log(cleanedUsersArray3);
   createNewSheet(cleanedUsersArray3); //create new sheet for users, and adds first row
 
   copyValues(duplicateNameOfSheetArray); //copy values and rows into there corresponding sheets
@@ -344,7 +344,7 @@ function removeOverlap(array1, arrayToBeCleaned) {
 function removeSpecialCases(array) {
   for (var i = 0; i < array.length; i++) {
 
-    if (array[i] === "Full name") {
+    if (array[i] === "User_ID") {
       array.splice(i, 1);
       continue;
     }
@@ -385,17 +385,17 @@ function removesDuplicates(duplicateArray) {
 }
 
 //get the userNames and structures them in Array - targets the second column
-function getUsers(nameOfUsersArray) {
+function getID(nameOfIDArray) {
 
   var sheet = ss.getSheetByName("Users Rankings Pull");
   var lastRow = sheet.getLastRow();
-  var userNames = sheet.getRange(1,2,lastRow,1).getValues();
+  var userID = sheet.getRange(1,1,lastRow,1).getValues();
 
-  for (var i = 0; i < userNames.length; i ++) {
-    nameOfUsersArray.push(userNames[i][0]);
+  for (var i = 0; i < userID.length; i ++) {
+    nameOfIDArray.push(userID[i][0]);
   }
 
-  return nameOfUsersArray;
+  return nameOfIDArray;
 }
 
 //Gets the name sheets and puts them into an Array (rather then an object)
