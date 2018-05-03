@@ -26,7 +26,7 @@ function createStrategicTile() {
 function writeValues(array) {
   var lastColumn = rankingTable.getLastColumn() - 1;
 
-  //This round function is added to intereact with other systems, and can be removed as necessary
+  //This round function is added to intereact with other systems, and can be removed as necessary as well as making smallest number possible 1
   for (i = 0 ; i < array.length; i++ ) {
     if (array[i] <= 1) {
       rankingTable.getRange(i + 3 , lastColumn).setValue('1');
@@ -35,6 +35,13 @@ function writeValues(array) {
       rankingTable.getRange(i + 3 , lastColumn).setValue(Math.round(array[i]));
     }
   }
+
+  // //This is the above with the round function
+  // for (i = 0 ; i < array.length; i++ ) {
+  //     rankingTable.getRange(i + 3 , lastColumn).setValue(array[i]);
+  // }
+  //
+
 }
 
 //applies the normal distribution to the total amount of values in the array.
