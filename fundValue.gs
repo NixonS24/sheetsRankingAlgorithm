@@ -10,8 +10,12 @@ function fundValue() {
   var numericValueArray = [];
   getnumericValue(numericValueArray);
 
-  var userVotes;
-  getUserVotes(userVotes);
+  //Creates an object of userVotes
+
+  var userVotes = getUserVotes();
+
+  var numOfUserVotes = [];
+  getNumOfUserVotes(numOfUserVotes, userVotes)
 
   //get object of all the votes for that days
   //Sum all the corresponding row to get total votes cast
@@ -26,14 +30,35 @@ function fundValue() {
 
 }
 
-function getUserVotes(object) {
-  object = userRankingsSheet.getRange(2,3,10,70).getValues();
-  Logger.log(object);
+function getNumOfUserVotes(array, object) {
+
+  newArray = [];
+  //Logger.log(object);
+  for (var i = 0; i < object.length; i ++) {
+    sum = 0;
+   for (var j = 0; j < object[0].length; j++) {
+     if (object[i][j] != 0) {
+       sum += parseInt(object[i][j])
+     }
+     else {
+       continue;
+     }
+    }
+    newArray.push(sum);
+  }
+  Logger.log(newArray);
+}
+
+function getUserVotes() {
+  var lastColumn = userRankingsSheet.getLastColumn() - 2;
+  var lastRow = userRankingsSheet.getLastRow() - 1;
+  var object = userRankingsSheet.getRange(2,3,lastRow,lastColumn).getValues();
   return object;
 }
 
 
-function numericValue(array) {
+
+function getnumericValue(array) {
 
   var rankingTable = ss.getSheetByName('rankingTable');
 
