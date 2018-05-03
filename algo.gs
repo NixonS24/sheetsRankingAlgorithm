@@ -19,7 +19,7 @@ function createRanking() {
   var duplicateUsersArray2 = cleanedUsersArray2.slice();
 
   var cleanedUsersArray3 = removeOverlap(nameOfSheetArray,cleanedUsersArray2); //removes names from array that already have a sheet
-  Logger.log(cleanedUsersArray3);
+
   createNewSheet(cleanedUsersArray3); //create new sheet for users, and adds first row
 
   copyValues(duplicateNameOfSheetArray); //copy values and rows into there corresponding sheets
@@ -31,6 +31,7 @@ function createRanking() {
   rankUser(duplicateUsersArray2); //updates the ranking table
 
   updatePreviousRankings(); //creates the previous days rankings
+
 }
 
 //Update PreviousDaysRankings
@@ -42,10 +43,10 @@ function updatePreviousRankings() {
   var binaryTransfo = makeBinary(rankingMovement); //just conform it to -1 and positive 1 so it is intereacts more easily with system
   //This can potential be refactored out if we want the whole number
   var rankingSheet = ss.getSheetByName('rankingTable');
-  var lastColumn = rankingSheet.getLastColumn();
+  var rankStatusColumn = 5;
 
   for (i = 0; i < binaryTransfo.length; i ++) {
-    rankingSheet.getRange(i + 3 , lastColumn).setValue(binaryTransfo[i]);
+    rankingSheet.getRange(i + 3 , rankStatusColumn).setValue(binaryTransfo[i]);
   }
 }
 
@@ -143,6 +144,7 @@ function createBaseFormat() {
   secondRowValues[2] = 'rank';
   secondRowValues[3] = 'power_vote';
   secondRowValues[4] = 'rank_Status';
+  secondRowValues[5] = 'fund_value';
 
   for (i = 0; i < secondRowValues.length; i++) {
     rankingSheet.getRange(2, i + 1).setValue(secondRowValues[i]);
