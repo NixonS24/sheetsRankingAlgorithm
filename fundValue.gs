@@ -9,13 +9,17 @@ function fundValue() {
 
   var numericValueArray = [];
   getnumericValue(numericValueArray);
+  Logger.log(numericValueArray)
 
   //Creates an object of userVotes
 
   var userVotes = getUserVotes();
 
   var numOfUserVotes = [];
-  getNumOfUserVotes(numOfUserVotes, userVotes)
+  var totalUserVotes = getNumOfUserVotes(numOfUserVotes, userVotes)
+  Logger.log(totalUserVotes)
+
+  writeMonetaryValue(numericValueArray,totalUserVotes,userVotes)
 
   //get object of all the votes for that days
   //Sum all the corresponding row to get total votes cast
@@ -25,28 +29,54 @@ function fundValue() {
   //Then need to figure out how this is going to intereact wiht market data
   //this should be summed somwhere and then added back
   //Also need to figure out how this is going to interact with market changes,
-    //potential I make be able to format a http request or copy values from current table.
+  //potential I make be able to format a http request or copy values from current table.
 
+
+}
+
+function writeMonetaryValue(numericValueArray, totalUserVotes,userVotes) {
+
+Logger.log(numericValueArray);
+Logger.log(totalUserVotes);
+Logger.log(userVotes);
+
+var newArray = []
+
+for (i = 0; i < numericValueArray.length; i ++) {
+  newArray.push(numericValueArray[i] / totalUserVotes[i]);
+}
+Logger.log(newArray);
+
+
+
+for (var i = 0; i < userVotes.length; i ++) {
+  for (j = 0; j < userVotes[0].length; j++) {
+  //  Logger.log(userVotes[i][j])
+  }
+}
 
 }
 
 function getNumOfUserVotes(array, object) {
 
-  newArray = [];
-  //Logger.log(object);
   for (var i = 0; i < object.length; i ++) {
     sum = 0;
    for (var j = 0; j < object[0].length; j++) {
-     if (object[i][j] != 0) {
+     if (object[i][j] == "-1") {
+       sum += (parseInt(object[i][j])* -1)
+     }
+     else if (object[i][j] == "1") {
        sum += parseInt(object[i][j])
      }
      else {
        continue;
      }
     }
-    newArray.push(sum);
+    array.push(sum);
   }
-  Logger.log(newArray);
+  //Logger.log(array);
+  return array;
+
 }
 
 function getUserVotes() {
