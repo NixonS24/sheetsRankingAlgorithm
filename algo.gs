@@ -9,11 +9,11 @@ function createRanking() {
   var nameOfSheetArray = [];
   getSheets(nameOfSheetArray); //returns array with name of Sheets
 
-  var nameOfUsersArray = [];
-  getUsers(nameOfUsersArray); //returns array with name of users
-  var duplicateNameOfSheetArray = nameOfUsersArray.slice();
+  var nameOfIDArray = [];
+  getID(nameOfIDArray); //returns array with name of users
+  var duplicateNameOfSheetArray = nameOfIDArray.slice();
 
-  var cleanedUsersArray = removesDuplicates(nameOfUsersArray); //removes duplicates in our Users Array
+  var cleanedUsersArray = removesDuplicates(nameOfIDArray); //removes duplicates in our Users Array
 
   var cleanedUsersArray2 = removeSpecialCases(cleanedUsersArray); //removes special cases in Array, Full Name and ""
   var duplicateUsersArray2 = cleanedUsersArray2.slice();
@@ -31,7 +31,11 @@ function createRanking() {
   rankUser(duplicateUsersArray2); //updates the ranking table
 
   updatePreviousRankings(); //creates the previous days rankings
+
 }
+
+//creates the column that looks at the funds value
+
 
 //Update PreviousDaysRankings
 function updatePreviousRankings() {
@@ -42,10 +46,10 @@ function updatePreviousRankings() {
   var binaryTransfo = makeBinary(rankingMovement); //just conform it to -1 and positive 1 so it is intereacts more easily with system
   //This can potential be refactored out if we want the whole number
   var rankingSheet = ss.getSheetByName('rankingTable');
-  var lastColumn = rankingSheet.getLastColumn();
+  var rankStatusColumn = 5;
 
   for (i = 0; i < binaryTransfo.length; i ++) {
-    rankingSheet.getRange(i + 3 , lastColumn).setValue(binaryTransfo[i]);
+    rankingSheet.getRange(i + 3 , rankStatusColumn).setValue(binaryTransfo[i]);
   }
 }
 
@@ -54,16 +58,17 @@ function makeBinary(array) {
 
   var newArray = [];
   for (i = 0; i < array.length; i ++) {
-    Logger.log(array[i])
     if (array[i] >= 1) {
       newArray.push('1');
+      continue;
     }
     if (array[i] <= -1){
       newArray.push('-1');
+      continue;
     }
     else {
-      Logger.log(array[i]);
       newArray.push('0');
+      continue;
     }
   }
   return newArray;
@@ -74,21 +79,21 @@ function compareScores(array) {
 
   //Necessary declaration to target the Current Rankings
   var lastRow1 = rankingSheet.getLastRow() - 2;
-  var currentRankingValues = rankingSheet.getRange(3,2,lastRow1,2).getValues();
+  var currentRankingValues = rankingSheet.getRange(3,1,lastRow1,3).getValues();
 
   //Necessary delclaration to target Previous Rankings
   var previousRankingSheet = ss.getSheetByName('previousRankingTable');
   var lastRow2 = previousRankingSheet.getLastRow() - 2;
-  var previousRankingValues = previousRankingSheet.getRange(3,2,lastRow2,2).getValues();
-
+  var previousRankingValues = previousRankingSheet.getRange(3,1,lastRow2,3).getValues();
+  
   for (i = 0; i < lastRow1; i++) {
    for (j = 0; j < lastRow2; j ++) {
      if (currentRankingValues[i][0] == previousRankingValues[j][0]) {
-       var temp = parseInt(previousRankingValues[j][1]) - parseInt(currentRankingValues[i][1]);
+       var temp = parseInt(previousRankingValues[j][2]) - parseInt(currentRankingValues[i][2]);
        array.push(temp);
        break;
      }
-     if (j == 3) {
+     if (j == lastRow2 - 1) {
        array.push('0'); //push 0 into correct place,
      }
    }
@@ -142,6 +147,7 @@ function createBaseFormat() {
   secondRowValues[2] = 'rank';
   secondRowValues[3] = 'power_vote';
   secondRowValues[4] = 'rank_Status';
+  secondRowValues[5] = 'fund_value';
 
   for (i = 0; i < secondRowValues.length; i++) {
     rankingSheet.getRange(2, i + 1).setValue(secondRowValues[i]);
@@ -264,6 +270,7 @@ function copyValues(array) {
       voteValues[0].unshift(new Date());
       var lastRow = tempSheet.getLastRow() + 1;
       tempSheet.getRange(lastRow, 1, 1, voteValues[0].length).setValues(voteValues);
+      tempSheet.getRange(lastRow + 1, 3).setValue(array[name]);
       count ++;
 
       createRankingsColumn(lastRow, tempSheet, voteValues); //fills the rankings column witht the appropriate measure
@@ -317,6 +324,7 @@ function createNewSheet(array) {
     else {
       ss.insertSheet().setName(array[element]);
       var sheet = ss.getSheetByName(array[element]);
+      sheet.deleteRows(100, 900); //delete rows to save space
       sheet.getRange(1, 2, 1, stockNames[0].length).setValues(stockNames);
     }
   }
@@ -341,7 +349,7 @@ function removeOverlap(array1, arrayToBeCleaned) {
 function removeSpecialCases(array) {
   for (var i = 0; i < array.length; i++) {
 
-    if (array[i] === "Full name") {
+    if (array[i] === "User_ID") {
       array.splice(i, 1);
       continue;
     }
@@ -382,17 +390,17 @@ function removesDuplicates(duplicateArray) {
 }
 
 //get the userNames and structures them in Array - targets the second column
-function getUsers(nameOfUsersArray) {
+function getID(nameOfIDArray) {
 
   var sheet = ss.getSheetByName("Users Rankings Pull");
   var lastRow = sheet.getLastRow();
-  var userNames = sheet.getRange(1,2,lastRow,1).getValues();
+  var userID = sheet.getRange(1,1,lastRow,1).getValues();
 
-  for (var i = 0; i < userNames.length; i ++) {
-    nameOfUsersArray.push(userNames[i][0]);
+  for (var i = 0; i < userID.length; i ++) {
+    nameOfIDArray.push(userID[i][0]);
   }
 
-  return nameOfUsersArray;
+  return nameOfIDArray;
 }
 
 //Gets the name sheets and puts them into an Array (rather then an object)
