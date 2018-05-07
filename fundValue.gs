@@ -7,19 +7,17 @@ var companySheet = ss.getSheetByName('CompanySheet');
 
 function fundValue() {
 
-  var numericValueArray = [];
-  getnumericValue(numericValueArray);
-  Logger.log(numericValueArray)
 
-  //Creates an object of userVotes
+  var userFundAllocation = makeUserFundAllocation(); //creates an array which states how much of the fund a user gets influence over
+  //Logger.log(userFundAllocation)
 
-  var userVotes = getUserVotes();
+  var userVotes = getUserVotes(); //gets an object which stores the total amount of userVotes made in a period.
+  //Logger.log(userVotes);
 
-  var numOfUserVotes = [];
-  var totalUserVotes = getNumOfUserVotes(numOfUserVotes, userVotes)
-  Logger.log(totalUserVotes)
+  var totalVotesPerUser = calculateTotalVotesPerUser(userVotes) //Calculates the total number of votes made by a user in absolute terms
+  //Logger.log(totalVotesPerUser);
 
-  writeMonetaryValue(numericValueArray,totalUserVotes,userVotes)
+  writeMonetaryValue(userFundAllocation,totalVotesPerUser,userVotes)
 
   //get object of all the votes for that days
   //Sum all the corresponding row to get total votes cast
@@ -36,11 +34,8 @@ function fundValue() {
 
 function writeMonetaryValue(numericValueArray, totalUserVotes,userVotes) {
 
-Logger.log(numericValueArray);
-Logger.log(totalUserVotes);
-Logger.log(userVotes);
 
-var newArray = []
+var newArray = [];
 
 for (i = 0; i < numericValueArray.length; i ++) {
   newArray.push(numericValueArray[i] / totalUserVotes[i]);
@@ -51,13 +46,15 @@ Logger.log(newArray);
 
 for (var i = 0; i < userVotes.length; i ++) {
   for (j = 0; j < userVotes[0].length; j++) {
-  //  Logger.log(userVotes[i][j])
+    Logger.log(userVotes[i][j])
   }
 }
 
 }
 
-function getNumOfUserVotes(array, object) {
+function calculateTotalVotesPerUser(object) {
+
+  var array = [];
 
   for (var i = 0; i < object.length; i ++) {
     sum = 0;
@@ -88,7 +85,9 @@ function getUserVotes() {
 
 
 
-function getnumericValue(array) {
+function makeUserFundAllocation() {
+
+  var array = [];
 
   var rankingTable = ss.getSheetByName('rankingTable');
 
