@@ -15,9 +15,11 @@ function fundValue() {
   //Logger.log(userVotes);
 
   var totalVotesPerUser = calculateTotalVotesPerUser(userVotes) //Calculates the total number of votes made by a user in absolute terms
-  //Logger.log(totalVotesPerUser);
+  Logger.log(totalVotesPerUser);
 
-  writeMonetaryValue(userFundAllocation,totalVotesPerUser,userVotes)
+  var userFundAllocationPerIndividualStock = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation)
+  Logger.log(userFundAllocationPerIndividualStock);
+  //writeMonetaryValue(userFundAllocation,totalVotesPerUser,userVotes)
 
   //get object of all the votes for that days
   //Sum all the corresponding row to get total votes cast
@@ -32,25 +34,40 @@ function fundValue() {
 
 }
 
-function writeMonetaryValue(numericValueArray, totalUserVotes,userVotes) {
+function makeUserFundAllocationPerIndividualStock(totalVotesPerUser, userFundAllocation) {
+  var userFundAllocationPerIndividualStock = [];
+  var noVotesCast = "0.0";
 
-
-var newArray = [];
-
-for (i = 0; i < numericValueArray.length; i ++) {
-  newArray.push(numericValueArray[i] / totalUserVotes[i]);
-}
-Logger.log(newArray);
-
-
-
-for (var i = 0; i < userVotes.length; i ++) {
-  for (j = 0; j < userVotes[0].length; j++) {
-    Logger.log(userVotes[i][j])
+  for (i = 0; i < totalVotesPerUser.length; i++) {
+    if (totalVotesPerUser[i] == noVotesCast) {
+      userFundAllocationPerIndividualStock.push("0");
+      continue;
+    }
+    userFundAllocationPerIndividualStock.push(userFundAllocation[i] / totalVotesPerUser[i]);
   }
+  return userFundAllocationPerIndividualStock;
 }
 
-}
+
+// function writeMonetaryValue(numericValueArray, totalUserVotes,userVotes) {
+//
+//
+// var newArray = [];
+//
+// for (i = 0; i < numericValueArray.length; i ++) {
+//   newArray.push(numericValueArray[i] / totalUserVotes[i]);
+// }
+// Logger.log(newArray);
+//
+//
+//
+// for (var i = 0; i < userVotes.length; i ++) {
+//   for (j = 0; j < userVotes[0].length; j++) {
+//     Logger.log(userVotes[i][j])
+//   }
+// }
+//
+// }
 
 function calculateTotalVotesPerUser(object) {
 
