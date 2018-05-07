@@ -14,6 +14,8 @@ function getMarketCap() {
   setMarketCapValuesInSheet(marketCapValues); //writes Market Cap Values into sheets
 }
 
+
+
 function setMarketCapValuesInSheet(marketCapValues) {
 
   for (i = 0; i < marketCapValues.length; i++) {
