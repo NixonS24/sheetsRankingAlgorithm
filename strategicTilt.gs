@@ -8,39 +8,41 @@ function createStrategicTile() {
   var getScoreArray = [];
   getScore(getScoreArray);
   var duplicateGetScoreArray = getScoreArray.slice()
+  //Logger.log(getScoreArray);
 
   var mean = getAverage(getScoreArray); //get the mean of the data
-
+  //Logger.log(mean)
   var standardDeviation = getStandardDeviation(duplicateGetScoreArray); //get the standard deviation of the data
-
+  //Logger.log(standardDeviation)
   var normalDistribution = standardise(duplicateGetScoreArray, mean, standardDeviation); //standardised the distribution to standardised normal
-
+  //Logger.log(normalDistribution)
   var positiveBounds = getPositiveBounds(normalDistribution); //increase the values in the array to be bounded by negative 0 - this is mathmatically unsound but quick for MVP
-
+  //Logger.log(positiveBounds)
   var votingPower = getVotingPower(positiveBounds); //determins the number of votes each user should have
-
+  //Logger.log(votingPower)
   writeValues(votingPower); //write the values into column next to user
+
 }
 
 //push an array into last empty column
 function writeValues(array) {
-  var lastColumn = rankingTable.getLastColumn() - 1;
+  var lastColumn = rankingTable.getLastColumn() - 2;
 
   //This round function is added to intereact with other systems, and can be removed as necessary as well as making smallest number possible 1
+  // for (i = 0 ; i < array.length; i++ ) {
+  //   if (array[i] <= 1) {
+  //     rankingTable.getRange(i + 3 , lastColumn).setValue('1');
+  //   }
+  //   else {
+  //     rankingTable.getRange(i + 3 , lastColumn).setValue(Math.round(array[i]));
+  //   }
+  // }
+
+  //This is the above with the round function
   for (i = 0 ; i < array.length; i++ ) {
-    if (array[i] <= 1) {
-      rankingTable.getRange(i + 3 , lastColumn).setValue('1');
-    }
-    else {
-      rankingTable.getRange(i + 3 , lastColumn).setValue(Math.round(array[i]));
-    }
+      rankingTable.getRange(i + 3 , lastColumn).setValue(array[i]);
   }
 
-  // //This is the above with the round function
-  // for (i = 0 ; i < array.length; i++ ) {
-  //     rankingTable.getRange(i + 3 , lastColumn).setValue(array[i]);
-  // }
-  //
 
 }
 

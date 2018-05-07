@@ -143,10 +143,11 @@ function makeUserFundAllocation() {
   var rankingTable = ss.getSheetByName('rankingTable');
 
   //Get powerVote number in an object
-  var lastRow = rankingTable.getLastRow() - 1;
+  var lastRow = rankingTable.getLastRow() - 2;
+  //Logger.log(lastRow)
   var powerVote = rankingTable.getRange(3,4,lastRow,1).getValues();
 
-  for (var i = 0; i < lastRow - 1; i ++) {
+  for (var i = 0; i < lastRow; i ++) {
     array.push(powerVote[i][0] * 100000 / lastRow);
     rankingTable.getRange(i + 3, 6).setValue(array[i]);
   }
