@@ -15,7 +15,7 @@ function fundValue() {
   //Logger.log(userVotes);
 
   var totalVotesPerUser = calculateTotalVotesPerUser(userVotes) //Calculates the total number of votes made by a user in absolute terms
-  Logger.log(totalVotesPerUser);
+  //Logger.log(totalVotesPerUser);
 
   var userFundAllocationPerIndividualStock = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation)
   Logger.log(userFundAllocationPerIndividualStock);
