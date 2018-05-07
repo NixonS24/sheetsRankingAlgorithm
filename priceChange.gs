@@ -9,11 +9,18 @@ function getPriceChange() {
 
   var priceChangePercent = getPriceChangePercent(companyTickers); //External API with IEX
 
-  setPriceChangeValuesInSheet(priceChangeValues); //writes
+  setPriceChangeValuesInSheet(priceChangePercent); //writes
 
 
 }
 
+function setPriceChangeValuesInSheet(priceChangePercent) {
+
+  for (i = 0; i < priceChangePercent.length; i++) {
+    var columnPosition = i + 2;
+    companySheet.getRange(tickerRow - 2, columnPosition).setValue(priceChangePercent[i])
+  }
+}
 
 
 function getPriceChangePercent(companyTickers) {
