@@ -2,6 +2,7 @@
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var companySheet = ss.getSheetByName('CompanySheet');
 var tickerRow = 5; //This correponds to the string "Ticker" in companySheet, if this changes we will need to update
+//relying on IEX API docs, which can be found at the following https://iextrading.com/developer/docs/#iex-regulation-sho-threshold-securities-list
 
 function getMarketCap() {
 
@@ -30,7 +31,7 @@ function getMarketCapValues(companyTickers) {
   var marketCapValues = [];
 
   for (var i = 0; i < companyTickers[0].length; i++) {
-    var baseURL = "https://api.iextrading.com/1.0/stock/" + companyTickers[0][i] + "/stats"
+    var baseURL = "https://api.iextrading.com/1.0/stock/" + companyTickers[0][i] + "/stats";
     var response = JSON.parse(UrlFetchApp.fetch(baseURL));
     marketCapValues.push(response.marketcap);
   }
