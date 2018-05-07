@@ -3,6 +3,7 @@ var ss = SpreadsheetApp.getActiveSpreadsheet();
 var rankingSheet = ss.getSheetByName('rankingTable');
 var userRankingsSheet = ss.getSheetByName("Users Rankings Pull");
 var companySheet = ss.getSheetByName('CompanySheet');
+var tickerRow = 5;
 //This function takes an array of numbers corresponds them to votes and then allocates it to the correct stock sections and then logs change through the days
 
 function fundValue() {
@@ -38,7 +39,13 @@ function fundValue() {
 }
 
 function setUnallocatedFunds(unallocatedFunds) {
-  Logger.log(unalloatedFunds);
+  var lastColumn = companySheet.getLastColumn();
+  var companyMarketCapPercent = companySheet.getRange(tickerRow + 2, 2, 1, lastColumn - 1).getValues();
+
+  for (var i = 0; i < companyMarketCapPercent[0].length; i ++) {
+    var columnPosition = i + 2;
+    companySheet.getRange(tickerRow + 4, columnPosition).setValue(companyMarketCapPercent[0][i] * unallocatedFunds);
+  }
 }
 
 function makeUserFundAllocationPerIndividualStock(totalVotesPerUser, userFundAllocation) {
