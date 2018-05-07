@@ -17,8 +17,11 @@ function fundValue() {
   var totalVotesPerUser = calculateTotalVotesPerUser(userVotes) //Calculates the total number of votes made by a user in absolute terms
   //Logger.log(totalVotesPerUser);
 
-  var userFundAllocationPerIndividualStock = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation)
-  Logger.log(userFundAllocationPerIndividualStock);
+  //NOTE: with this function array[0] = unallocatedFunds, array[1]-[n] = userFundAllocationPerIndividualStock
+  var userFundAllocation = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation);
+  //Logger.log(userFundAllocation);
+
+  setUnallocatedFunds(userFundAllocation[0]);
   //writeMonetaryValue(userFundAllocation,totalVotesPerUser,userVotes)
 
   //get object of all the votes for that days
@@ -34,18 +37,27 @@ function fundValue() {
 
 }
 
+function setUnallocatedFunds(unallocatedFunds) {
+  Logger.log(unalloatedFunds);
+}
+
 function makeUserFundAllocationPerIndividualStock(totalVotesPerUser, userFundAllocation) {
   var userFundAllocationPerIndividualStock = [];
+  var unallocatedFunds = 0;
   var noVotesCast = "0.0";
 
   for (i = 0; i < totalVotesPerUser.length; i++) {
     if (totalVotesPerUser[i] == noVotesCast) {
       userFundAllocationPerIndividualStock.push("0");
+      unallocatedFunds += userFundAllocation[i];
       continue;
     }
     userFundAllocationPerIndividualStock.push(userFundAllocation[i] / totalVotesPerUser[i]);
   }
-  return userFundAllocationPerIndividualStock;
+  //Logger.log(userFundAllocationPerIndividualStock)
+  //Logger.log(unallocatedFunds);
+  return [unallocatedFunds, userFundAllocationPerIndividualStock];
+
 }
 
 
