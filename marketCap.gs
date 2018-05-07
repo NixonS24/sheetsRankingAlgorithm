@@ -12,14 +12,20 @@ function getMarketCap() {
 
 function getMarketCapValues(companyTickers) {
 
-  //"https://api.iextrading.com/1.0/stock/aapl/stats"
+  // base format "https://api.iextrading.com/1.0/stock/aapl/stats"
 
-  var baseURL = "https://api.iextrading.com/1.0/stock/" + companyTickers[0][0] + "/stats"
+  var marketCapValues = [];
 
-  var response = JSON.parse(UrlFetchApp.fetch(baseURL));
+  for (var i = 0; i < companyTickers[0].length; i++) {
+    var baseURL = "https://api.iextrading.com/1.0/stock/" + companyTickers[0][i] + "/stats"
 
-  Logger.log(response.symbol)
+    var response = JSON.parse(UrlFetchApp.fetch(baseURL));
+
+    marketCapValues.push(response.marketcap);
+  }
+  Logger.log(marketCapValues);
 }
+
 
 function getTickers() {
   var lastColumn = companySheet.getLastColumn();
