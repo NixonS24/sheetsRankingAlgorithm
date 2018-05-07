@@ -13,16 +13,22 @@ function fundValue() {
   //Logger.log(userFundAllocation)
 
   var userVotes = getUserVotes(); //gets an object which stores the total amount of userVotes made in a period.
-  //Logger.log(userVotes);
+  Logger.log(userVotes);
 
   var totalVotesPerUser = calculateTotalVotesPerUser(userVotes) //Calculates the total number of votes made by a user in absolute terms
   //Logger.log(totalVotesPerUser);
 
   //NOTE: with this function array[0] = unallocatedFunds, array[1]-[n] = userFundAllocationPerIndividualStock
-  var userFundAllocation = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation);
-  //Logger.log(userFundAllocation);
+  var userFundAllocationPerIndividual = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation);
+  //Logger.log(userFundAllocationPerIndividual);
 
-  setUnallocatedFunds(userFundAllocation[0]);
+  var unallocatedFunds = userFundAllocationPerIndividual[0];
+  userFundAllocationPerIndividual.splice(0,1); //removes first value, which is the unallocatedFunds
+  Logger.log(userFundAllocationPerIndividual);
+
+  setUnallocatedFunds(unallocatedFunds);
+
+  setAllocatedFunds(userFundAllocationPerIndividual, userVotes);
   //writeMonetaryValue(userFundAllocation,totalVotesPerUser,userVotes)
 
   //get object of all the votes for that days
@@ -34,8 +40,26 @@ function fundValue() {
   //this should be summed somwhere and then added back
   //Also need to figure out how this is going to interact with market changes,
   //potential I make be able to format a http request or copy values from current table.
+}
 
+function setAllocatedFunds(userFundAllocationPerIndividual, userVotes) {
 
+  var buyStock = [];
+  var sellStock = [];
+
+  for (var i = 0; i < userFundAllocationPerIndividual[0].length; i++) {
+    if (userFundAllocationPerIndividual[0] == 0) {
+      Logger.log('checkibng break one');
+      continue;
+    }
+    else {
+      for (var i = 0; i < userVotes.length; i ++) {
+        for (j = 0; j < userVotes[0].length; j++) {
+          Logger.log(userVotes[i][j])
+        }
+      }
+    }
+  }
 }
 
 function setUnallocatedFunds(unallocatedFunds) {
