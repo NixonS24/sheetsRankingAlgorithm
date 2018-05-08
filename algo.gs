@@ -85,7 +85,7 @@ function compareScores(array) {
   var previousRankingSheet = ss.getSheetByName('previousRankingTable');
   var lastRow2 = previousRankingSheet.getLastRow() - 2;
   var previousRankingValues = previousRankingSheet.getRange(3,1,lastRow2,3).getValues();
-  
+
   for (i = 0; i < lastRow1; i++) {
    for (j = 0; j < lastRow2; j ++) {
      if (currentRankingValues[i][0] == previousRankingValues[j][0]) {
@@ -122,10 +122,11 @@ function rankUser(array) {
 
    var userId = tempSheet.getRange(2,2).getValue();
    var userScore = tempSheet.getRange(1,1).getValue();
+   var userName = tempSheet.getRange(2,3).getValue()
    var lastRow = rankingSheet.getLastRow() + 1;
 
    rankingSheet.getRange(lastRow,1).setValue(userId);
-   rankingSheet.getRange(lastRow,2).setValue(array[name]);
+   rankingSheet.getRange(lastRow,2).setValue(userName);
 
    if (userScore == '#NUM!') {
      rankingSheet.getRange(lastRow,4).setValue('0');

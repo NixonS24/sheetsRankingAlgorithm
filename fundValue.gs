@@ -13,7 +13,7 @@ function fundValue() {
   //Logger.log(userFundAllocation)
 
   var userVotes = getUserVotes(); //gets an object which stores the total amount of userVotes made in a period.
-  Logger.log(userVotes);
+  //Logger.log(userVotes);
 
   var totalVotesPerUser = calculateTotalVotesPerUser(userVotes) //Calculates the total number of votes made by a user in absolute terms
   //Logger.log(totalVotesPerUser);
@@ -24,22 +24,12 @@ function fundValue() {
 
   var unallocatedFunds = userFundAllocationPerIndividual[0];
   userFundAllocationPerIndividual.splice(0,1); //removes first value, which is the unallocatedFunds
-  Logger.log(userFundAllocationPerIndividual);
+  //Logger.log(userFundAllocationPerIndividual);
 
   setUnallocatedFunds(unallocatedFunds);
 
   setAllocatedFunds(userFundAllocationPerIndividual, userVotes);
   //writeMonetaryValue(userFundAllocation,totalVotesPerUser,userVotes)
-
-  //get object of all the votes for that days
-  //Sum all the corresponding row to get total votes cast
-  //Need to put in case if 0, not sure what yet
-  //Need to then dump into the corresponding company in company sheets
-  //Should be added if cell is not null
-  //Then need to figure out how this is going to intereact wiht market data
-  //this should be summed somwhere and then added back
-  //Also need to figure out how this is going to interact with market changes,
-  //potential I make be able to format a http request or copy values from current table.
 }
 
 function setAllocatedFunds(userFundAllocationPerIndividual, userVotes) {
@@ -153,10 +143,11 @@ function makeUserFundAllocation() {
   var rankingTable = ss.getSheetByName('rankingTable');
 
   //Get powerVote number in an object
-  var lastRow = rankingTable.getLastRow() - 1;
+  var lastRow = rankingTable.getLastRow() - 2;
+  //Logger.log(lastRow)
   var powerVote = rankingTable.getRange(3,4,lastRow,1).getValues();
 
-  for (var i = 0; i < lastRow - 1; i ++) {
+  for (var i = 0; i < lastRow; i ++) {
     array.push(powerVote[i][0] * 100000 / lastRow);
     rankingTable.getRange(i + 3, 6).setValue(array[i]);
   }
