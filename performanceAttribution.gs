@@ -3,7 +3,7 @@
 //Global Declarations
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var companySheet = ss.getSheetByName('CompanySheet');
-var tickerRow = 5; //This correponds to the string "Ticker" in companySheet, if this changes we will need to update
+var tickerRow = 5; //This correponds to the string "Ticker" in companySheet, if this changes we will need to update because there are a lot of dependecies
 
 //Create Sharpe ratio and the put into centralised sheet
 function performanceAttribute() {
@@ -11,52 +11,78 @@ function performanceAttribute() {
   var companyTickers = getTickers2(); //get Values from Sheets
   Logger.log(companyTickers);
 
-  //var mostUpToDateCompanyPrices = getMostUpToDateCompanyPrices(companyTickers); //External API Call, using IEX
-  //Logger.log(mostUpToDateCompanyPrices);
+  var mostUpToDateCompanyPrices = getMostUpToDateCompanyPrices(companyTickers); //External API Call, using IEX
+  Logger.log(mostUpToDateCompanyPrices);
 
-//  setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices);
+  setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices);
 
-  //updateOtherCompanySheets(companyTickers);
+  updateCompanySheets(companyTickers);
 
   createNewCompanySheetIfDoesNotExist(companyTickers);
 
-
+  pullSharpeRatioIntoCompanySheet(companyTickers)
 }
 
-function updateOtherCompanySheets(companyTickers) {
-  var count = 0;
+function pullSharpeRatioIntoCompanySheet(companyTickers) {
+  var companyColumnPosition = 2;
+  var companySheetLastRow = companySheet.getLastRow() + 1;
+  var protectedCompanySheetCells = tickerRow + 12;
+  var sharpeRatioColumn = 11; //Corresponds to position K on the Ticker Sheets
 
-  for (ticker in companyTickers) {
-    var tempSheet = ss.getSheetByName(companyTickers[ticker]);
-    if (tempSheet == null){
+  if (companySheetLastRow < protectedCompanySheetCells) {
+    companySheetLastRow = 17; //protection to make sure we don't overwrite set formulas in CompanySheet
+  }
+
+  timeStamp();
+
+  for (tickers in companyTickers) {
+    var tickerSheet = ss.getSheetByName(companyTickers[tickers]);
+
+    if (tickerSheet == null) {
+      companyColumnPosition ++;
+      Logger.log(companyColumnPosition)
+      Logger.log('error ' + companyTickers[tickers] + ' not found')
       continue;
-      count ++;
+      //break;
     }
     else {
-      var currentRow = tempSheet.getLastRow() + 1;
-      var companyPrice = companySheet.getRange(2, count + 2).getValue()
-      Logger.log(companyTickers[ticker] + ticker + companyPrice)
-
-      formatingOfStrings(tempSheet, currentRow);
-      tempSheet.getRange(currentRow, 1).setValue(new Date());
-      tempSheet.getRange(currentRow, 2).setValue(companyPrice);
-      count ++;
+      var tickerSheetLastRow = tickerSheet.getLastRow();
+      var tickerSheetSharpeRatio = tickerSheet.getRange(tickerSheetLastRow, sharpeRatioColumn).getValue();
+      companySheet.getRange(companySheetLastRow, companyColumnPosition).setValue(tickerSheetSharpeRatio);
+      companyColumnPosition ++;
+      //Logger.log(companyColumnPosition);
     }
   }
 }
 
-function formatingOfStrings(tempSheet, currentRow) {
-  var previousRow = currentRow - 1;
-  var futureRow = currentRow + 1 ;
+function timeStamp() {
+  var lastRow = companySheet.getLastRow() + 1;
+  companySheet.getRange(lastRow, 1).setValue(new Date());
+}
 
-  tempSheet.getRange(currentRow, 8).setValue('=IF(C' + futureRow + '="", 0 , H' + futureRow + ' + 1)');
-  tempSheet.getRange(currentRow, 10).setValue('0.0000407915511135837');
-  if (currentRow > 3) {
-    tempSheet.getRange(currentRow, 3).setValue('=B' + currentRow + '/B' + previousRow);
-    tempSheet.getRange(currentRow, 9).setValue('=C' + currentRow + '-1');
-    tempSheet.getRange(currentRow, 11).setValue('=(I' + currentRow + '-J' + currentRow + ')/F2');
+
+function updateCompanySheets(companyTickers) {
+  var companyColumnPosition = 2; //starting position of companies is from column B, = 2
+
+  for (ticker in companyTickers) {
+    var tickerSheet = ss.getSheetByName(companyTickers[ticker]);
+    if (tickerSheet == null){
+      continue;
+      companyColumnPosition ++;
+    }
+    else {
+      var currentRow = tickerSheet.getLastRow() + 1;
+      var companyPrice = companySheet.getRange(2, companyColumnPosition).getValue()
+      Logger.log(companyTickers[ticker] + ticker + companyPrice)
+
+      formatingOfStrings(tickerSheet, currentRow);
+      tickerSheet.getRange(currentRow, 1).setValue(new Date());
+      tickerSheet.getRange(currentRow, 2).setValue(companyPrice);
+      companyColumnPosition ++;
+    }
   }
 }
+
 
 function createNewCompanySheetIfDoesNotExist(companyTickers) {
   for (ticker in companyTickers) {
@@ -90,10 +116,10 @@ function formatFirstRow(ticker) {
   firstRowValues[9] = 'Risk Free';
   firstRowValues[10] = 'Sharpe Ratio';
 
-  var tempSheet = ss.getSheetByName(ticker);
+  var tickerSheet = ss.getSheetByName(ticker);
 
   for (i = 0; i < firstRowValues.length; i++) {
-    tempSheet.getRange(1 , i + 1).setValue(firstRowValues[i]);
+    tickerSheet.getRange(1 , i + 1).setValue(firstRowValues[i]);
   }
 }
 
@@ -107,10 +133,10 @@ function formatSecondRow(ticker) {
   secondRowValues[5] = '=If(G2 <= 7, 0.0215, STDEV(C4:C))'; //this will force us to have a speical companyUpdate when st.dev is calculated differently
   secondRowValues[6] = '=Count(C4:C)';
 
-  var tempSheet = ss.getSheetByName(ticker);
+  var tickerSheet = ss.getSheetByName(ticker);
 
   for (i = 0; i < secondRowValues.length; i++) {
-    tempSheet.getRange(2 , i + 1).setValue(secondRowValues[i]);
+    tickerSheet.getRange(2 , i + 1).setValue(secondRowValues[i]);
   }
 }
 
@@ -125,16 +151,28 @@ function formatRemainingRows(ticker) {
     closePrices.push(response[j].close);
   }
 
-  var tempSheet = ss.getSheetByName(ticker);
+  var tickerSheet = ss.getSheetByName(ticker);
   var startingRow = 3;
   for (i = 0; i < timeStamps.length; i ++) {
     var currentRow = i + 3;
-    formatingOfStrings(tempSheet, currentRow);
-    tempSheet.getRange(currentRow, 1).setValue(timeStamps[i]);
-    tempSheet.getRange(currentRow, 2).setValue(closePrices[i]);
+    formatingOfStrings(tickerSheet, currentRow);
+    tickerSheet.getRange(currentRow, 1).setValue(timeStamps[i]);
+    tickerSheet.getRange(currentRow, 2).setValue(closePrices[i]);
   }
 }
 
+function formatingOfStrings(tempSheet, currentRow) {
+  var previousRow = currentRow - 1;
+  var futureRow = currentRow + 1 ;
+
+  tempSheet.getRange(currentRow, 8).setValue('=IF(C' + futureRow + '="", 0 , H' + futureRow + ' + 1)');
+  tempSheet.getRange(currentRow, 10).setValue('0.0000407915511135837');
+  if (currentRow > 3) {
+    tempSheet.getRange(currentRow, 3).setValue('=B' + currentRow + '/B' + previousRow);
+    tempSheet.getRange(currentRow, 9).setValue('=C' + currentRow + '-1');
+    tempSheet.getRange(currentRow, 11).setValue('=(I' + currentRow + '-J' + currentRow + ')/F2');
+  }
+}
 
 function setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices) {
   var companyValuesRow = tickerRow - 3;
