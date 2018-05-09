@@ -8,7 +8,7 @@ var tickerRow = 5; //This correponds to the string "Ticker" in companySheet, if 
 //Create Sharpe ratio and the put into centralised sheet
 function performanceAttribute() {
 
-  var companyTickers = getTickers(); //get Values from Sheets
+  var companyTickers = getTickers2(); //get Values from Sheets
   Logger.log(companyTickers);
 
   var mostUpToDateCompanyPrices = getMostUpToDateCompanyPrices(companyTickers); //External API Call, using IEX
@@ -16,7 +16,23 @@ function performanceAttribute() {
 
   setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices);
 
-  sleep(1000); //to make sure company prices have loaded. 
+  createNewCompanySheetIfDoesNotExist(companyTickers);
+}
+
+function createNewCompanySheetIfDoesNotExist(companyTickers) {
+  for (ticker in companyTickers) {
+    var testReponse = ss.getSheetByName(companyTickers[ticker]);
+    if (testReponse != null) {
+      continue;
+    }
+    else {
+      ss.insertSheet().setName(companyTickers[ticker]);
+      var newSheet = ss.getSheetByName(companyTickers[ticker]);
+      newSheet.deleteRows(100,900);
+      //formatFirstRow(companyTickers[ticker]);
+      //formatSecondRow(companyTickers[ticker]);
+    }
+  }
 }
 
 function setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices) {
@@ -30,16 +46,21 @@ function setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices) {
 function getMostUpToDateCompanyPrices(companyTickers) {
   var companyPrices = [];
 
-  for (var i = 0; i < companyTickers[0].length; i++) {
-    var baseURL = "https://api.iextrading.com/1.0/stock/" + companyTickers[0][i] + "/time-series";
+  for (var i = 0; i < companyTickers.length; i++) {
+    var baseURL = "https://api.iextrading.com/1.0/stock/" + companyTickers[i] + "/time-series";
     var response = JSON.parse(UrlFetchApp.fetch(baseURL));
     companyPrices.push(response[20].close) //There are 21 datapoints returns from IEX and we want the most recent (probably needs to be refactored for dependency)
   }
   return companyPrices;
 }
 
-function getTickers() {
+function getTickers2() {
+  var array = [];
   var lastColumn = companySheet.getLastColumn();
   var companyTickers = companySheet.getRange(tickerRow,2, 1, lastColumn - 1).getValues();
-  return companyTickers;
+
+  for (var i = 0; i < companyTickers[0].length; i++) {
+    array.push(companyTickers[0][i]);
+  }
+  return array;
 }
