@@ -11,12 +11,18 @@ function performanceAttribute() {
   var companyTickers = getTickers2(); //get Values from Sheets
   Logger.log(companyTickers);
 
-  var mostUpToDateCompanyPrices = getMostUpToDateCompanyPrices(companyTickers); //External API Call, using IEX
-  Logger.log(mostUpToDateCompanyPrices);
+  //var mostUpToDateCompanyPrices = getMostUpToDateCompanyPrices(companyTickers); //External API Call, using IEX
+  //Logger.log(mostUpToDateCompanyPrices);
 
-  setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices);
+//  setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices);
 
   createNewCompanySheetIfDoesNotExist(companyTickers);
+
+  updateOtherCompanySheets(companyTickers);
+}
+
+function updateOtherCompanySheets(companyTickers) {
+
 }
 
 function createNewCompanySheetIfDoesNotExist(companyTickers) {
@@ -83,30 +89,32 @@ function formatRemainingRows(ticker) {
   var response = JSON.parse(UrlFetchApp.fetch(baseURL));
   for (var j = 0; j < response.length; j++) {
     timeStamps.push(response[j].date);
-    Logger.log(response[j].date);
     closePrices.push(response[j].close);
-    Logger.log(response[j].close)
   }
 
   var tempSheet = ss.getSheetByName(ticker);
-
+  var startingRow = 3;
   for (i = 0; i < timeStamps.length; i ++) {
-    var previousRow = i + 3 - 1;
-    var currentRow = i + 3;
-    var futureRow = i + 3 + 1 ;
-
+    formatingOfStrings(i, tempSheet, startingRow);
     tempSheet.getRange(i + 3, 1).setValue(timeStamps[i]);
     tempSheet.getRange(i + 3, 2).setValue(closePrices[i]);
-    tempSheet.getRange(i + 3, 8).setValue('=IF(C' + futureRow + '="", 0 , H' + futureRow + ' + 1)');
-    tempSheet.getRange(i + 3, 10).setValue('0.0000407915511135837');
-    if (i > 0) {
-      tempSheet.getRange(i + 3, 3).setValue('=B' + currentRow + '/B' + previousRow);
-      tempSheet.getRange(i + 3, 9).setValue('=C' + currentRow + '-1');
-      tempSheet.getRange(i + 3, 11).setValue('=(I' + currentRow + '-J' + currentRow + ')/F2')
-
-    }
-
   }
+}
+
+function formatingOfStrings(i, tempSheet, startingRow) {
+  var previousRow = i + startingRow - 1;
+  var currentRow = i + startingRow;
+  var futureRow = i + startingRow + 1 ;
+
+
+  tempSheet.getRange(currentRow, 8).setValue('=IF(C' + futureRow + '="", 0 , H' + futureRow + ' + 1)');
+  tempSheet.getRange(currentRow, 10).setValue('0.0000407915511135837');
+  if (i > 0) {
+    tempSheet.getRange(currentRow, 3).setValue('=B' + currentRow + '/B' + previousRow);
+    tempSheet.getRange(currentRow, 9).setValue('=C' + currentRow + '-1');
+    tempSheet.getRange(currentRow, 11).setValue('=(I' + currentRow + '-J' + currentRow + ')/F2')
+  }
+
 }
 
 function setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices) {
