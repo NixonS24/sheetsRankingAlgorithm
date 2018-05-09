@@ -16,13 +16,46 @@ function performanceAttribute() {
 
 //  setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices);
 
+  //updateOtherCompanySheets(companyTickers);
+
   createNewCompanySheetIfDoesNotExist(companyTickers);
 
-  updateOtherCompanySheets(companyTickers);
+
 }
 
 function updateOtherCompanySheets(companyTickers) {
+  var count = 0;
 
+  for (ticker in companyTickers) {
+    var tempSheet = ss.getSheetByName(companyTickers[ticker]);
+    if (tempSheet == null){
+      continue;
+      count ++;
+    }
+    else {
+      var currentRow = tempSheet.getLastRow() + 1;
+      var companyPrice = companySheet.getRange(2, count + 2).getValue()
+      Logger.log(companyTickers[ticker] + ticker + companyPrice)
+
+      formatingOfStrings(tempSheet, currentRow);
+      tempSheet.getRange(currentRow, 1).setValue(new Date());
+      tempSheet.getRange(currentRow, 2).setValue(companyPrice);
+      count ++;
+    }
+  }
+}
+
+function formatingOfStrings(tempSheet, currentRow) {
+  var previousRow = currentRow - 1;
+  var futureRow = currentRow + 1 ;
+
+  tempSheet.getRange(currentRow, 8).setValue('=IF(C' + futureRow + '="", 0 , H' + futureRow + ' + 1)');
+  tempSheet.getRange(currentRow, 10).setValue('0.0000407915511135837');
+  if (currentRow > 3) {
+    tempSheet.getRange(currentRow, 3).setValue('=B' + currentRow + '/B' + previousRow);
+    tempSheet.getRange(currentRow, 9).setValue('=C' + currentRow + '-1');
+    tempSheet.getRange(currentRow, 11).setValue('=(I' + currentRow + '-J' + currentRow + ')/F2');
+  }
 }
 
 function createNewCompanySheetIfDoesNotExist(companyTickers) {
@@ -95,27 +128,13 @@ function formatRemainingRows(ticker) {
   var tempSheet = ss.getSheetByName(ticker);
   var startingRow = 3;
   for (i = 0; i < timeStamps.length; i ++) {
-    formatingOfStrings(i, tempSheet, startingRow);
-    tempSheet.getRange(i + 3, 1).setValue(timeStamps[i]);
-    tempSheet.getRange(i + 3, 2).setValue(closePrices[i]);
+    var currentRow = i + 3;
+    formatingOfStrings(tempSheet, currentRow);
+    tempSheet.getRange(currentRow, 1).setValue(timeStamps[i]);
+    tempSheet.getRange(currentRow, 2).setValue(closePrices[i]);
   }
 }
 
-function formatingOfStrings(i, tempSheet, startingRow) {
-  var previousRow = i + startingRow - 1;
-  var currentRow = i + startingRow;
-  var futureRow = i + startingRow + 1 ;
-
-
-  tempSheet.getRange(currentRow, 8).setValue('=IF(C' + futureRow + '="", 0 , H' + futureRow + ' + 1)');
-  tempSheet.getRange(currentRow, 10).setValue('0.0000407915511135837');
-  if (i > 0) {
-    tempSheet.getRange(currentRow, 3).setValue('=B' + currentRow + '/B' + previousRow);
-    tempSheet.getRange(currentRow, 9).setValue('=C' + currentRow + '-1');
-    tempSheet.getRange(currentRow, 11).setValue('=(I' + currentRow + '-J' + currentRow + ')/F2')
-  }
-
-}
 
 function setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices) {
   var companyValuesRow = tickerRow - 3;
