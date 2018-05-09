@@ -49,8 +49,7 @@ function formatFirstRow(ticker) {
   firstRowValues[7] = 'Time';
   firstRowValues[8] = 'Return';
   firstRowValues[9] = 'Risk Free';
-  firstRowValues[10] = 'St.Dev';
-  firstRowValues[11] = 'Sharpe ratio'
+  firstRowValues[10] = 'Sharpe Ratio';
 
   var tempSheet = ss.getSheetByName(ticker);
 
@@ -84,14 +83,29 @@ function formatRemainingRows(ticker) {
   var response = JSON.parse(UrlFetchApp.fetch(baseURL));
   for (var j = 0; j < response.length; j++) {
     timeStamps.push(response[j].date);
+    Logger.log(response[j].date);
     closePrices.push(response[j].close);
+    Logger.log(response[j].close)
   }
 
   var tempSheet = ss.getSheetByName(ticker);
 
   for (i = 0; i < timeStamps.length; i ++) {
+    var previousRow = i + 3 - 1;
+    var currentRow = i + 3;
+    var futureRow = i + 3 + 1 ;
+
     tempSheet.getRange(i + 3, 1).setValue(timeStamps[i]);
     tempSheet.getRange(i + 3, 2).setValue(closePrices[i]);
+    tempSheet.getRange(i + 3, 8).setValue('=IF(C' + futureRow + '="", 0 , H' + futureRow + ' + 1)');
+    tempSheet.getRange(i + 3, 10).setValue('0.0000407915511135837');
+    if (i > 0) {
+      tempSheet.getRange(i + 3, 3).setValue('=B' + currentRow + '/B' + previousRow);
+      tempSheet.getRange(i + 3, 9).setValue('=C' + currentRow + '-1');
+      tempSheet.getRange(i + 3, 11).setValue('=(I' + currentRow + '-J' + currentRow + ')/F2')
+
+    }
+
   }
 }
 
