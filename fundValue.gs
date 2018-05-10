@@ -31,6 +31,92 @@ function fundValue() {
   setAllocatedFunds(userFundAllocationPerIndividual, userVotes);
 }
 
+function makeUserFundAllocation() {
+
+  var array = [];
+  var updatedFundValue = companySheet.getRange(14,2).getValue();
+  var rankingTable = ss.getSheetByName('rankingTable');
+
+  //Get powerVote number in an object
+  var lastRow = rankingTable.getLastRow() - 2;
+  //Logger.log(lastRow)
+  var powerVote = rankingTable.getRange(3,4,lastRow,1).getValues();
+
+  for (var i = 0; i < lastRow; i ++) {
+    array.push(powerVote[i][0] * updatedFundValue / lastRow);
+    rankingTable.getRange(i + 3, 6).setValue(array[i]);
+  }
+  return array;
+}
+
+function getUserVotes2() {
+  var lastColumn = userRankingsSheet.getLastColumn() - 2;
+  //Logger.log(lastColumn)
+  var lastRow = userRankingsSheet.getLastRow() - 1;
+  //Logger.log(lastRow)
+  var object = userRankingsSheet.getRange(2,3,lastRow,lastColumn).getValues();
+  //var object = userRankingsSheet.getRange(2,3,25,100).getValues();
+  return object;
+}
+
+function calculateTotalVotesPerUser(object) {
+
+  var array = [];
+
+  for (var i = 0; i < object.length; i ++) {
+    sum = 0;
+   for (var j = 0; j < object[0].length; j++) {
+     if (object[i][j] == "-1") {
+       sum += (parseInt(object[i][j])* -1)
+     }
+     else if (object[i][j] == "1") {
+       sum += parseInt(object[i][j])
+     }
+     else {
+       continue;
+     }
+    }
+    array.push(sum);
+  }
+  //Logger.log(array);
+  return array;
+
+}
+
+function makeUserFundAllocationPerIndividualStock(totalVotesPerUser, userFundAllocation) {
+  //Logger.log(totalVotesPerUser);
+  //Logger.log(userFundAllocation);
+
+  var userFundAllocationPerIndividualStock = [];
+  var unallocatedFunds = 0;
+  var noVotesCast = "0.0";
+
+  for (i = 0; i < totalVotesPerUser.length; i++) {
+    if (totalVotesPerUser[i] == noVotesCast) {
+      userFundAllocationPerIndividualStock.push("0");
+      unallocatedFunds += userFundAllocation[i];
+      continue;
+    } else {
+    userFundAllocationPerIndividualStock.push(userFundAllocation[i] / totalVotesPerUser[i]);
+    }
+  }
+  //Logger.log(userFundAllocationPerIndividualStock)
+  //Logger.log(unallocatedFunds);
+  return [unallocatedFunds, userFundAllocationPerIndividualStock];
+
+}
+
+function setUnallocatedFunds(unallocatedFunds) {
+  Logger.log(unallocatedFunds)
+  var lastColumn = companySheet.getLastColumn();
+  var companyMarketCapPercent = companySheet.getRange(tickerRow + 2, 2, 1, lastColumn - 1).getValues();
+
+  for (var i = 0; i < companyMarketCapPercent[0].length; i ++) {
+    var columnPosition = i + 2;
+    companySheet.getRange(tickerRow + 4, columnPosition).setValue(companyMarketCapPercent[0][i] * unallocatedFunds);
+  }
+}
+
 function setAllocatedFunds(userFundAllocationPerIndividual, userVotes) {
 
   var buyStock = [];
@@ -70,93 +156,4 @@ function setAllocatedFunds(userFundAllocationPerIndividual, userVotes) {
         }
     }
   }
-}
-
-function setUnallocatedFunds(unallocatedFunds) {
-  Logger.log(unallocatedFunds)
-  var lastColumn = companySheet.getLastColumn();
-  var companyMarketCapPercent = companySheet.getRange(tickerRow + 2, 2, 1, lastColumn - 1).getValues();
-
-  for (var i = 0; i < companyMarketCapPercent[0].length; i ++) {
-    var columnPosition = i + 2;
-    companySheet.getRange(tickerRow + 4, columnPosition).setValue(companyMarketCapPercent[0][i] * unallocatedFunds);
-  }
-}
-
-function makeUserFundAllocationPerIndividualStock(totalVotesPerUser, userFundAllocation) {
-  //Logger.log(totalVotesPerUser);
-  //Logger.log(userFundAllocation);
-
-  var userFundAllocationPerIndividualStock = [];
-  var unallocatedFunds = 0;
-  var noVotesCast = "0.0";
-
-  for (i = 0; i < totalVotesPerUser.length; i++) {
-    if (totalVotesPerUser[i] == noVotesCast) {
-      userFundAllocationPerIndividualStock.push("0");
-      unallocatedFunds += userFundAllocation[i];
-      continue;
-    } else {
-    userFundAllocationPerIndividualStock.push(userFundAllocation[i] / totalVotesPerUser[i]);
-    }
-  }
-  //Logger.log(userFundAllocationPerIndividualStock)
-  //Logger.log(unallocatedFunds);
-  return [unallocatedFunds, userFundAllocationPerIndividualStock];
-
-}
-
-
-function calculateTotalVotesPerUser(object) {
-
-  var array = [];
-
-  for (var i = 0; i < object.length; i ++) {
-    sum = 0;
-   for (var j = 0; j < object[0].length; j++) {
-     if (object[i][j] == "-1") {
-       sum += (parseInt(object[i][j])* -1)
-     }
-     else if (object[i][j] == "1") {
-       sum += parseInt(object[i][j])
-     }
-     else {
-       continue;
-     }
-    }
-    array.push(sum);
-  }
-  //Logger.log(array);
-  return array;
-
-}
-
-function getUserVotes2() {
-  var lastColumn = userRankingsSheet.getLastColumn() - 2;
-  //Logger.log(lastColumn)
-  var lastRow = userRankingsSheet.getLastRow() - 1;
-  //Logger.log(lastRow)
-  var object = userRankingsSheet.getRange(2,3,lastRow,lastColumn).getValues();
-  //var object = userRankingsSheet.getRange(2,3,25,100).getValues();
-  return object;
-}
-
-
-
-function makeUserFundAllocation() {
-
-  var array = [];
-  var updatedFundValue = companySheet.getRange(14,2).getValue();
-  var rankingTable = ss.getSheetByName('rankingTable');
-
-  //Get powerVote number in an object
-  var lastRow = rankingTable.getLastRow() - 2;
-  //Logger.log(lastRow)
-  var powerVote = rankingTable.getRange(3,4,lastRow,1).getValues();
-
-  for (var i = 0; i < lastRow; i ++) {
-    array.push(powerVote[i][0] * updatedFundValue / lastRow);
-    rankingTable.getRange(i + 3, 6).setValue(array[i]);
-  }
-  return array;
 }
