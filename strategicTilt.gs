@@ -92,7 +92,7 @@ function getPositiveBounds(array) {
   var minimum = Array.min(array);
 
   for (var i = 0; i < array.length; i ++) {
-    var temp = array[i] - minimum;
+    var temp = array[i] - minimum; //needs to be minus because minimum is usually negative (might need to put a case in here to stop it braking)
     positiveBounds.push(temp);
   }
   return positiveBounds;
