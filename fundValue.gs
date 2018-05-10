@@ -7,12 +7,11 @@ var tickerRow = 5;
 //This function takes an array of numbers corresponds them to votes and then allocates it to the correct stock sections and then logs change through the days
 
 function fundValue() {
-
-
+  
   var userFundAllocation = makeUserFundAllocation(); //creates an array which states how much of the fund a user gets influence over
   //Logger.log(userFundAllocation)
 
-  var userVotes = getUserVotes(); //gets an object which stores the total amount of userVotes made in a period.
+  var userVotes = getUserVotes2(); //gets an object which stores the total amount of userVotes made in a period.
   //Logger.log(userVotes);
 
   var totalVotesPerUser = calculateTotalVotesPerUser(userVotes) //Calculates the total number of votes made by a user in absolute terms
@@ -25,11 +24,11 @@ function fundValue() {
   var unallocatedFunds = userFundAllocationPerIndividual[0];
   userFundAllocationPerIndividual.splice(0,1); //removes first value, which is the unallocatedFunds
   //Logger.log(userFundAllocationPerIndividual);
+  //Logger.log(unallocatedFunds);
 
   setUnallocatedFunds(unallocatedFunds);
 
   setAllocatedFunds(userFundAllocationPerIndividual, userVotes);
-  //writeMonetaryValue(userFundAllocation,totalVotesPerUser,userVotes)
 }
 
 function setAllocatedFunds(userFundAllocationPerIndividual, userVotes) {
@@ -74,6 +73,7 @@ function setAllocatedFunds(userFundAllocationPerIndividual, userVotes) {
 }
 
 function setUnallocatedFunds(unallocatedFunds) {
+  Logger.log(unallocatedFunds)
   var lastColumn = companySheet.getLastColumn();
   var companyMarketCapPercent = companySheet.getRange(tickerRow + 2, 2, 1, lastColumn - 1).getValues();
 
@@ -84,6 +84,9 @@ function setUnallocatedFunds(unallocatedFunds) {
 }
 
 function makeUserFundAllocationPerIndividualStock(totalVotesPerUser, userFundAllocation) {
+  //Logger.log(totalVotesPerUser);
+  //Logger.log(userFundAllocation);
+
   var userFundAllocationPerIndividualStock = [];
   var unallocatedFunds = 0;
   var noVotesCast = "0.0";
@@ -93,8 +96,9 @@ function makeUserFundAllocationPerIndividualStock(totalVotesPerUser, userFundAll
       userFundAllocationPerIndividualStock.push("0");
       unallocatedFunds += userFundAllocation[i];
       continue;
-    }
+    } else {
     userFundAllocationPerIndividualStock.push(userFundAllocation[i] / totalVotesPerUser[i]);
+    }
   }
   //Logger.log(userFundAllocationPerIndividualStock)
   //Logger.log(unallocatedFunds);
@@ -127,10 +131,13 @@ function calculateTotalVotesPerUser(object) {
 
 }
 
-function getUserVotes() {
+function getUserVotes2() {
   var lastColumn = userRankingsSheet.getLastColumn() - 2;
+  //Logger.log(lastColumn)
   var lastRow = userRankingsSheet.getLastRow() - 1;
+  //Logger.log(lastRow)
   var object = userRankingsSheet.getRange(2,3,lastRow,lastColumn).getValues();
+  //var object = userRankingsSheet.getRange(2,3,25,100).getValues();
   return object;
 }
 
