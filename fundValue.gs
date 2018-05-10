@@ -146,7 +146,7 @@ function getUserVotes2() {
 function makeUserFundAllocation() {
 
   var array = [];
-  var updatedFundValue = companySheet.getRange(2,14).getValue();
+  var updatedFundValue = companySheet.getRange(14,2).getValue();
   var rankingTable = ss.getSheetByName('rankingTable');
 
   //Get powerVote number in an object
