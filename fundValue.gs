@@ -1,4 +1,4 @@
-//Global Declarations
+//Global Declarations and dependcies
 var ss = SpreadsheetApp.getActiveSpreadsheet();
 var rankingSheet = ss.getSheetByName('rankingTable');
 var userRankingsSheet = ss.getSheetByName("Users Rankings Pull");
@@ -7,7 +7,7 @@ var tickerRow = 5;
 //This function takes an array of numbers corresponds them to votes and then allocates it to the correct stock sections and then logs change through the days
 
 function fundValue() {
-  
+
   var userFundAllocation = makeUserFundAllocation(); //creates an array which states how much of the fund a user gets influence over
   //Logger.log(userFundAllocation)
 
@@ -146,7 +146,7 @@ function getUserVotes2() {
 function makeUserFundAllocation() {
 
   var array = [];
-
+  var updatedFundValue = companySheet.getRange(2,14).getValue();
   var rankingTable = ss.getSheetByName('rankingTable');
 
   //Get powerVote number in an object
@@ -155,7 +155,7 @@ function makeUserFundAllocation() {
   var powerVote = rankingTable.getRange(3,4,lastRow,1).getValues();
 
   for (var i = 0; i < lastRow; i ++) {
-    array.push(powerVote[i][0] * 100000 / lastRow);
+    array.push(powerVote[i][0] * updatedFundValue / lastRow);
     rankingTable.getRange(i + 3, 6).setValue(array[i]);
   }
   return array;
