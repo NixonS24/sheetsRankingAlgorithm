@@ -9,10 +9,10 @@ var tickerRow = 5; //This correponds to the string "Ticker" in companySheet, if 
 function performanceAttribute() {
 
   var companyTickers = getTickers2(); //get Values from Sheets
-  Logger.log(companyTickers);
+  //Logger.log(companyTickers);
 
   var mostUpToDateCompanyPrices = getMostUpToDateCompanyPrices(companyTickers); //External API Call, using IEX
-  Logger.log(mostUpToDateCompanyPrices);
+  ///Logger.log(mostUpToDateCompanyPrices);
 
   setMostUpToDateCompanyPricesInSheet(mostUpToDateCompanyPrices);
 
