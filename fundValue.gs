@@ -26,6 +26,8 @@ function fundValue() {
   //Logger.log(userFundAllocationPerIndividual);
   //Logger.log(unallocatedFunds);
 
+  clearExistingFundAllocation();
+
   setUnallocatedFunds(unallocatedFunds);
 
   setAllocatedFunds(userFundAllocationPerIndividual, userVotes);
@@ -107,8 +109,13 @@ function makeUserFundAllocationPerIndividualStock(totalVotesPerUser, userFundAll
 
 }
 
+function clearExistingFundAllocation() {
+  var lastColumn = companySheet.getLastColumn();
+  companySheet.getRange(tickerRow + 4 , 2 , 2, lastColumn - 1).clear({contentsOnly: true});
+}
+
 function setUnallocatedFunds(unallocatedFunds) {
-  Logger.log(unallocatedFunds)
+  //Logger.log(unallocatedFunds)
   var lastColumn = companySheet.getLastColumn();
   var companyMarketCapPercent = companySheet.getRange(tickerRow + 2, 2, 1, lastColumn - 1).getValues();
 
