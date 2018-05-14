@@ -7,7 +7,7 @@ function cohortAnalysis() {
   var userIDs = getUserIDs();
   //Logger.log(userIDs);
 
-
+  var DatesAndVotesPerTotal = getDatesAndVotesPerTotal(userIDs);
 }
 
 function getUserIDs() {
@@ -20,4 +20,8 @@ function getUserIDs() {
     userIDs.push(userIDObject[i][0]);
   }
   return userIDs;
+}
+
+function getDatesAndVotesPerTotal(userIDs) {
+  var 
 }

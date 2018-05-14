@@ -12,7 +12,7 @@ function createRanking() {
   var nameOfIDArray = [];
   getID(nameOfIDArray); //returns array with name of users
   var duplicateNameOfSheetArray = nameOfIDArray.slice();
-  Logger.log(nameOfIDArray);
+  //Logger.log(nameOfIDArray);
   var cleanedUsersArray = removesDuplicates(nameOfIDArray); //removes duplicates in our Users Array
 
   var cleanedUsersArray2 = removeSpecialCases(cleanedUsersArray); //removes special cases in Array, Full Name and ""
