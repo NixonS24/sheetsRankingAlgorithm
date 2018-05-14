@@ -1,6 +1,18 @@
 # Ranking Algorithm
 
-Summary:
+This project is a Google Script Program that converts user votes (ether up/down) into an allocation of a fund, based upon the past accuracy of there votes.
+
+# Getting Started
+
+These instructions will get a copy of the project running on you local machine for development and testing purposes. As of yet this project has not been configured to work in a live system (because it will have to rebuilt)
+
+# Prerequisites
+
+There are no packages that need to be installed locally to make this project work. There are however a number of sheets that need to be formatted for this project to work correctly. My aim is to created this base templates for download (in the future) but in the interim I will provide a description.
+
+
+
+# Summary:
 
 This program takes votes on American stocks, corresponds that to the risk-weighted return (sharpe-ratio) of the stock over the relevant time interval, and then generates a value which is used to rank the users.
 
