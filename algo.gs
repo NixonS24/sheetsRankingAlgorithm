@@ -12,7 +12,7 @@ function createRanking() {
   var nameOfIDArray = [];
   getID(nameOfIDArray); //returns array with name of users
   var duplicateNameOfSheetArray = nameOfIDArray.slice();
-
+  Logger.log(nameOfIDArray);
   var cleanedUsersArray = removesDuplicates(nameOfIDArray); //removes duplicates in our Users Array
 
   var cleanedUsersArray2 = removeSpecialCases(cleanedUsersArray); //removes special cases in Array, Full Name and ""
@@ -24,6 +24,8 @@ function createRanking() {
 
   copyValues(duplicateNameOfSheetArray); //copy values and rows into there corresponding sheets
 
+  setEngagmentValue(nameOfIDArray); //This is used to for the cohort analysis to determine the frequency of voting
+
   getScoreLeft(duplicateNameOfSheetArray); //Create scores on Top Left Hand of User Sheet
 
   storeValues(); //copies current days rankingsTable, and puts them previousRankingTable
@@ -34,7 +36,30 @@ function createRanking() {
 
 }
 
-//creates the column that looks at the funds value
+function setEngagmentValue(array) {
+  Logger.log(array);
+  for (name in array) {
+    var tempSheet = ss.getSheetByName(array[name]);
+
+
+    if (tempSheet == null) {
+      Logger.log(tempSheet);
+      continue;
+    } else {
+    var lastRow = tempSheet.getLastRow();
+    tempSheet.getRange(lastRow, 1).setValue(engagementFunction(lastRow));
+    }
+  }
+}
+
+function engagementFunction(lastRow) {
+  var previousRow = lastRow - 1;
+  var stringFormatted =  ('=(COUNT(D' + lastRow + ':DU' + lastRow + ')/COUNT(D' + previousRow + ':DU' + previousRow + '))');
+  Logger.log(stringFormatted);
+  return stringFormatted;
+}
+
+
 
 
 //Update PreviousDaysRankings
@@ -254,6 +279,7 @@ function powerFunction(number) {
 }
 
 
+
 //Grabs the appropriate columns and copys them into their correct sheet (by Name)
 function copyValues(array) {
   var count = 1;
@@ -311,7 +337,6 @@ function hLookupString(col, tempSheet) {
   return hLookup;
 }
 
-
 //create new sheets and adds columns into the array
 function createNewSheet(array) {
   var maxColumns = userRankingsSheet.getMaxColumns();
@@ -330,6 +355,7 @@ function createNewSheet(array) {
     }
   }
 }
+
 //remove Overlaps in two Ararys
 function removeOverlap(array1, arrayToBeCleaned) {
   for (var element in array1) {
@@ -345,7 +371,6 @@ function removeOverlap(array1, arrayToBeCleaned) {
   }
   return arrayToBeCleaned;
 }
-
 
 function removeSpecialCases(array) {
   for (var i = 0; i < array.length; i++) {
