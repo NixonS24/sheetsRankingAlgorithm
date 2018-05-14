@@ -188,7 +188,7 @@ function getMostUpToDateCompanyPrices(companyTickers) {
   for (var i = 0; i < companyTickers.length; i++) {
     var baseURL = "https://api.iextrading.com/1.0/stock/" + companyTickers[i] + "/time-series";
     var response = JSON.parse(UrlFetchApp.fetch(baseURL));
-    companyPrices.push(response[response.length - 1].close) //There are 21 datapoints returns from IEX and we want the most recent (probably needs to be refactored for dependency)
+    companyPrices.push(response[response.length - 1].close) 
   }
   return companyPrices;
 }
