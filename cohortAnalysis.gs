@@ -68,4 +68,11 @@ function testVariable() {
     }
   }
   Logger.log(array2);
+
+
+  //This should be refactored into a function at this point
+}
+
+function testVariable2() {
+
 }
