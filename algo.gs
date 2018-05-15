@@ -12,6 +12,8 @@ function createRanking () {
 
   var userID = getUserID();
   Logger.log(userID);
+
+  //var IDsThatDontHaveASheet = removeIdsThatHaveASheet
 }
 
 function getNameOfSheets() {
@@ -19,7 +21,14 @@ function getNameOfSheets() {
   var nameOfSheetsObject = ss.getSheets();
 
   for (var i = 0; i < nameOfSheetsObject.length; i++) {
-    nameOfSheetsArray.push(ss.getSheets()[i].getName());
+    var temp = ss.getSheets()[i].getName();
+    if (parseInt(temp) == NaN) {
+      continue;
+    }
+    else {
+      nameOfSheetsArray.push(temp);
+      continue;
+    }
   }
   return nameOfSheetsArray;
 }

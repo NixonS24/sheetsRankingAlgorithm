@@ -26,11 +26,11 @@ This program takes votes on American stocks, corresponds that to the risk-weight
 
 The run order of the program is the following:
 
-1) performanceAttribution.gs;
-2) Alog.gs
-3) StrategicTile.gs
-4) fundValue.gs;
-5) FundValueFotmattingCSV.gs
+1) performanceAttribution.gs - Updates the Sharpe Ratios, and company Sheet
+2) Alog.gs - Corresponds Votes to Sharpe Ratio and then creates/updates rankings
+3) StrategicTile.gs - Puts the total score of each user into a normal distribution then updates the table.
+4) fundValue.gs - Allocates each individual portfolio funding based on past decisions, and then puts there votes into
+5) FundValueFotmattingCSV.gs - creates spreadsheet to be imported.
 
 Key Components:
 
