@@ -198,7 +198,7 @@ function storeValues() {
 
   var previousRankingTable = ss.getSheetByName('previousRankingTable');
 
-  if (rankingSheet == null) {
+  if (rankingSheet == 'null') {
     return;
   }
 
@@ -292,7 +292,7 @@ function copyValues(array) {
       voteValues[0].unshift(new Date());
       var lastRow = tempSheet.getLastRow() + 1;
       tempSheet.getRange(lastRow, 1, 1, voteValues[0].length).setValues(voteValues);
-      tempSheet.getRange(lastRow + 1, 3).setValue(array[name]);
+      tempSheet.getRange(lastRow + 1, 3).setValue(array[name]); // lets refactor this to 2
       count ++;
 
       createRankingsColumn(lastRow, tempSheet, voteValues); //fills the rankings column witht the appropriate measure
@@ -322,13 +322,10 @@ function createRankingsColumn(row, tempSheet, voteValues) {
 //fomats the BetaRow
 function hLookupString(col, tempSheet) {
   var colAsLetter = columnToLetter(col,tempSheet); //converts column number to letter
-
   var lastColAsLetter = columnToLetter(userRankingsSheet.getLastColumn());
   var lastRow = ss.getSheetByName('CompanySheet').getLastRow();
   var maxRow = userRankingsSheet.getMaxRows();
-
   var hLookup = ('=HLOOKUP(' + colAsLetter + '1 , CompanySheet!A1:' + lastColAsLetter + maxRow + ',' + lastRow + ', FALSE)');
-
   return hLookup;
 }
 
