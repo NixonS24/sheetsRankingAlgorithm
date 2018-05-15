@@ -10,11 +10,27 @@ These instructions will get a copy of the project running on you local machine f
 
 There are no packages that need to be installed locally to make this project work. There are however a number of sheets that need to be formatted for this project to work correctly. My aim is to created this base templates for download (in the future) but in the interim I will provide a description.
 
+You need two formatted sheets:
+
+1) companySheet:
+      Row 5, Cell 2 - list of Company Tickers
+
+2) UserRankingPull:
+      Row 1 - "UserID", "Full Name", then list of Company Names in corresponding order to Company Sheet
+      Row 2 - UserId, Full Name, list of votes (1 = up, -1 = down, 0 = null)
 
 
 # Summary:
 
 This program takes votes on American stocks, corresponds that to the risk-weighted return (sharpe-ratio) of the stock over the relevant time interval, and then generates a value which is used to rank the users.
+
+The run order of the program is the following:
+
+1) performanceAttribution.gs;
+2) Alog.gs
+3) StrategicTile.gs
+4) fundValue.gs;
+5) FundValueFotmattingCSV.gs
 
 Key Components:
 
