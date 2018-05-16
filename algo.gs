@@ -96,7 +96,7 @@ function hLookupString(col, tempSheet) {
 
 function setEngagmentValue(userID) {
   for (IDNumber in userID) {
-    var tempSheet = ss.getSheetByName(array[name]);
+    var tempSheet = ss.getSheetByName(userID[IDNumber]);
     var lastRow = tempSheet.getLastRow();
     tempSheet.getRange(lastRow, 1).setValue(engagementFunction(lastRow));
   }

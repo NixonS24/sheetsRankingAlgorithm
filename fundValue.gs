@@ -37,7 +37,7 @@ function makeUserFundAllocation() {
 
   var array = [];
   var updatedFundValue = ss.getSheetByName('Fund Value FormattingCSV').getRange(1,2).getValue();
-//Logger.log(updatedFundValue);
+  //Logger.log(updatedFundValue);
   var rankingTable = ss.getSheetByName('rankingTable');
 
   //Get powerVote number in an object
