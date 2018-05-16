@@ -8,11 +8,11 @@ function cohortAnalysis() {
 
   createCohortSheet(cohortAnalysisSheet);
 
-  var userIDs = getUserIDs();
-  Logger.log(userIDs);
+  //var userIDs = getUserIDs();
+  //Logger.log(userIDs);
+  var userIDs = ['481','468', '473']
 
   var userEngamentScore = getUserEngagementScores(userIDs); //This is predefined as
-  Logger(userEngamentScore);
 
 
 
@@ -48,7 +48,7 @@ function cohortAnalysis() {
       Logger.log(tempUserSheetLastRow);
       tempUserSheetTargetValues = tempUserSheet.getRange(2,1,tempUserSheetLastRow,1).getValues();
 
-      for (var i = 0; i < tempUserSheetTargetValues.length; i += 2) {
+      for (var i = 1; i < tempUserSheetTargetValues.length; i += 2) {
         numOfVotesToTotalVotesCast.push(tempUserSheetTargetValues[i][0]);
       }
       Logger.log(numOfVotesToTotalVotesCast);
@@ -60,24 +60,28 @@ function cohortAnalysis() {
   }
 
   function makeChangeInUserEngagamentScore(userEngamentScore) {
+    Logger.log(userEngamentScore);
     var changeInUserEngagementScore = [];
     for (var i = 0; i < userEngamentScore.length; i ++) {
       switch (i) {
         case 0:
           if (userEngamentScore[i] != 0) {
             changeInUserEngagementScore.push('1');
+            Logger.log('case 0, not 0');
             continue;
           } else {
             changeInUserEngagementScore.push('0');
+            Logger.log('case 0, else case');
             continue;
           }
         default:
           if (userEngamentScore[i] - userEngamentScore[i - 1] != 0) {
-            changeInUserEngagementScore.push('0');
-            Logger.log('change in voting pattern, ' + userEngamentScore)
+            changeInUserEngagementScore.push('1');
+            Logger.log('default case, not 0;=');
             continue;
           } else {
-            changeInUserEngagementScore.push('1');
+            changeInUserEngagementScore.push('0');
+            Logger.log('default case, else case');
             continue;
           }
       }
