@@ -29,8 +29,9 @@ The run order of the program is the following:
 1) performanceAttribution.gs - Updates the Sharpe Ratios, and company Sheet
 2) Alog.gs - Corresponds Votes to Sharpe Ratio and then creates/updates rankings
 3) StrategicTile.gs - Puts the total score of each user into a normal distribution then updates the table.
-4) fundValue.gs - Allocates each individual portfolio funding based on past decisions, and then puts there votes into
-5) FundValueFotmattingCSV.gs - creates spreadsheet to be imported.
+4) PriceChange.gs - Updates change in price for days movements
+5) fundValue.gs - Allocates each individual portfolio funding based on past decisions, and then puts there votes into
+6) FundValueFotmattingCSV.gs - creates spreadsheet to be imported.
 
 Key Components:
 
