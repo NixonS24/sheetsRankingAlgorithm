@@ -96,14 +96,14 @@ function cohortAnalysis() {
     var cohortAnalysisNumberOfUsedRow = cohortAnalysisLastRow - beginningOfRowFormatting;
 
     for (var i = 0; i < changeInUserEngagementScore.length; i ++) {
-      var temp = cohortAnalysisSheet.getRange(beginningOfRowFormatting + changeInUserEngagementScore.length, beginningOfColumnFormating + i).getValue();
+      var temp = cohortAnalysisSheet.getRange(8 - changeInUserEngagementScore.length, 8 - changeInUserEngagementScore.length + i).getValue();
       temp += parseFloat(changeInUserEngagementScore[i])
-      cohortAnalysisSheet.getRange(beginningOfRowFormatting + changeInUserEngagementScore.length, beginningOfColumnFormating + i).setValue(temp);
+      cohortAnalysisSheet.getRange(8 - changeInUserEngagementScore.length, 8 - changeInUserEngagementScore.length + i).setValue(temp);
     }
 
     //This is a user count.
-    var temp2 = cohortAnalysisSheet.getRange(beginningOfRowFormatting + changeInUserEngagementScore.length, 1).getValue();
+    var temp2 = cohortAnalysisSheet.getRange(8 - changeInUserEngagementScore.length, 1).getValue();
     temp2 += 1;
-    cohortAnalysisSheet.getRange(beginningOfRowFormatting + changeInUserEngagementScore.length, 1).setValue(temp2);
+    cohortAnalysisSheet.getRange(8 - changeInUserEngagementScore.length, 1).setValue(temp2);
   }
 }
