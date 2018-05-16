@@ -8,9 +8,9 @@ function cohortAnalysis() {
 
   createCohortSheet(cohortAnalysisSheet);
 
-  //var userIDs = getUserIDs();
-  //Logger.log(userIDs);
-  var userIDs = ['481','468', '473']
+  var userIDs = getUserIDs();
+  Logger.log(userIDs);
+  //var userIDs = ['481','468', '473']
 
   var userEngamentScore = getUserEngagementScores(userIDs); //This is predefined as
 
@@ -96,14 +96,14 @@ function cohortAnalysis() {
     var cohortAnalysisNumberOfUsedRow = cohortAnalysisLastRow - beginningOfRowFormatting;
 
     for (var i = 0; i < changeInUserEngagementScore.length; i ++) {
-      var temp = cohortAnalysisSheet.getRange(cohortAnalysisLastRow - changeInUserEngagementScore.length, 8 - changeInUserEngagementScore.length + i).getValue();
+      var temp = cohortAnalysisSheet.getRange(cohortAnalysisLastRow - changeInUserEngagementScore.length, cohortAnalysisLastRow - changeInUserEngagementScore.length + i).getValue();
       temp += parseFloat(changeInUserEngagementScore[i])
-      cohortAnalysisSheet.getRange(cohortAnalysisLastRow - changeInUserEngagementScore.length, 8 - changeInUserEngagementScore.length + i).setValue(temp);
+      cohortAnalysisSheet.getRange(cohortAnalysisLastRow - changeInUserEngagementScore.length, cohortAnalysisLastRow - changeInUserEngagementScore.length + i).setValue(temp);
     }
 
     //This is a user count.
-    var temp2 = cohortAnalysisSheet.getRange(8 - changeInUserEngagementScore.length, 1).getValue();
+    var temp2 = cohortAnalysisSheet.getRange(cohortAnalysisLastRow - changeInUserEngagementScore.length, 1).getValue();
     temp2 += 1;
-    cohortAnalysisSheet.getRange(8 - changeInUserEngagementScore.length, 1).setValue(temp2);
+    cohortAnalysisSheet.getRange(cohortAnalysisLastRow - changeInUserEngagementScore.length, 1).setValue(temp2);
   }
 }
