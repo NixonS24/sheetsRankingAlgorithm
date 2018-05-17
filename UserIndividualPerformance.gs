@@ -9,16 +9,16 @@ function userIndividualPerformance() {
 
 
   var userFundAllocation = getUserFundAllocation();
-  Logger.log(userFundAllocation.length);
+  //Logger.log(userFundAllocation.length);
 
   var userVotes = getUserVotes();
-  Logger.log(userVotes.length);
+  //Logger.log(userVotes.length);
 
   var userIDs = getUserIDs();
-  Logger.log(userIDs.length);
+  //Logger.log(userIDs.length);
 
   var totalVotesPerUser = calculateTotalVotesPerUser(userVotes);
-  Logger.log(totalVotesPerUser.length);
+  //Logger.log(totalVotesPerUser.length);
 
   //NOTE: with this function array[0] = unallocatedFunds, array[1]-[n] = userFundAllocationPerIndividualStock
   var userFundAllocationPerIndividual = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation);
@@ -29,10 +29,11 @@ function userIndividualPerformance() {
   //Logger.log(userFundAllocationPerIndividual);
   //Logger.log(unallocatedFunds);
 
-  var percetangeChangePerUser = makeAllocatedFunds(userFundAllocationPerIndividual, userVotes);
-  Logger.log(percetangeChangePerUser);
-  Logger.log(percetangeChangePerUser.length);
+  var absoluteContributionPerUser = makeAllocatedFunds(userFundAllocationPerIndividual, userVotes);
+  Logger.log(absoluteContributionPerUser);
+  Logger.log(absoluteContributionPerUser.length);
 
+  setContributionPerUser(absoluteContributionPerUser,userIDs);
 
   //Functions
 
@@ -126,25 +127,23 @@ function userIndividualPerformance() {
           for (j = 0; j < userVotes[i].length; j++) {
             //Logger.log(userVotes[k][j]);
             if (j == (parseFloat(userVotes[i].length) - 1)) {
-                var addingAllPercentageChange = 0;
+              var addingAllPercentageChange = 0;
               for (t = 0; t < temp.length; t++) {
                 addingAllPercentageChange += temp[t];
               }
-               percentageChangeUser.push(addingAllPercentageChange);
-                Logger.log(addingAllPercentageChange + ' addingallpercetangechange');
+              percentageChangeUser.push(addingAllPercentageChange);
+                //Logger.log(addingAllPercentageChange + ' addingallpercetangechange');
             }
             else if (userVotes[i][j] == "0") {
               continue;
             }
             else if (userVotes[i][j] == "1") {
              var stockChange = companySheet.getRange(tickerRow - 2 , j + 2).getValue();
-             Logger.log(stockChange + ' stockChange');
+             //Logger.log(stockChange + ' stockChange');
              var performanceFigure = parseFloat(userFundAllocationPerIndividual[0][i]) * parseFloat(stockChange);
-             Logger.log(performanceFigure + ' performanceFigure');
+             //Logger.log(performanceFigure + ' performanceFigure');
              temp.push(performanceFigure);
-              Logger.log(temp + ' temp');
-              // Logger.log(j);
-              // Logger.log(userFundAllocationPerIndividual[0][i]);
+            //Logger.log(temp + ' temp');
               continue;
 
             }
@@ -152,8 +151,6 @@ function userIndividualPerformance() {
               var stockChange = companySheet.getRange(tickerRow - 2 , j + 2).getValue();
               var performanceFigure = parseFloat(userFundAllocationPerIndividual[0][i]) * parseFloat(stockChange) * -1;
               temp.push(performanceFigure);
-              // Logger.log(j);
-              // Logger.log(userFundAllocationPerIndividual[0][i]);
               continue;
             }
             else {
@@ -163,5 +160,23 @@ function userIndividualPerformance() {
       }
     }
     return percentageChangeUser;
+  }
+
+  function setContributionPerUser(absoluteContributionPerUser,userIDs) {
+    Logger.log(absoluteContributionPerUser);
+    Logger.log(userIDs);
+    for (position in absoluteContributionPerUser) {
+      if (absoluteContributionPerUser[position] == 0) {
+        Logger.log('processing 0 correclty');
+        continue;
+      }
+      else {
+        var userSheet = ss.getSheetByName(userIDs[position]);
+        Logger.log(userSheet);
+        var userSheetLastRow = userSheet.getLastRow();
+        userSheet.getRange(userSheetLastRow, 3).setValue(absoluteContributionPerUser[position])
+        continue;
+      }
+    }
   }
 }
