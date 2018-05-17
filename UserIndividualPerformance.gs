@@ -8,34 +8,34 @@ function userIndividualPerformance() {
   var tickerRow = 5;
 
 
-  // var userFundAllocation = getUserFundAllocation();
-  // //Logger.log(userFundAllocation.length);
-  //
-  // var userVotes = getUserVotes();
-  // //Logger.log(userVotes.length);
-  //
-  // var userIDs = getUserIDs();
-  // //Logger.log(userIDs.length);
-  //
-  // var totalVotesPerUser = calculateTotalVotesPerUser(userVotes);
-  // //Logger.log(totalVotesPerUser.length);
-  //
-  // //NOTE: with this function array[0] = unallocatedFunds, array[1]-[n] = userFundAllocationPerIndividualStock
-  // var userFundAllocationPerIndividual = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation);
-  // //Logger.log(userFundAllocationPerIndividual);
-  //
-  // var unallocatedFunds = userFundAllocationPerIndividual[0];
-  // userFundAllocationPerIndividual.splice(0,1); //removes first value, which is the unallocatedFunds
-  // //Logger.log(userFundAllocationPerIndividual);
-  // //Logger.log(unallocatedFunds);
-  //
-  // var absoluteContributionPerUser = makeAllocatedFunds(userFundAllocationPerIndividual, userVotes);
-  // //Logger.log(absoluteContributionPerUser);
-  // //Logger.log(absoluteContributionPerUser.length);
-  //
-  // setContributionPerUser(absoluteContributionPerUser,userIDs);
-  //
-  // addAndSetContributionPerUserOverLifeTime(userIDs);
+  var userFundAllocation = getUserFundAllocation();
+  //Logger.log(userFundAllocation.length);
+
+  var userVotes = getUserVotes();
+  //Logger.log(userVotes.length);
+
+  var userIDs = getUserIDs();
+  //Logger.log(userIDs.length);
+
+  var totalVotesPerUser = calculateTotalVotesPerUser(userVotes);
+  //Logger.log(totalVotesPerUser.length);
+
+  //NOTE: with this function array[0] = unallocatedFunds, array[1]-[n] = userFundAllocationPerIndividualStock
+  var userFundAllocationPerIndividual = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation);
+  //Logger.log(userFundAllocationPerIndividual);
+
+  var unallocatedFunds = userFundAllocationPerIndividual[0];
+  userFundAllocationPerIndividual.splice(0,1); //removes first value, which is the unallocatedFunds
+  //Logger.log(userFundAllocationPerIndividual);
+  //Logger.log(unallocatedFunds);
+
+  var absoluteContributionPerUser = makeAllocatedFunds(userFundAllocationPerIndividual, userVotes);
+  //Logger.log(absoluteContributionPerUser);
+  //Logger.log(absoluteContributionPerUser.length);
+
+  setContributionPerUser(absoluteContributionPerUser,userIDs);
+
+  addAndSetContributionPerUserOverLifeTime(userIDs);
 
   defineAlphaContribution()
 
