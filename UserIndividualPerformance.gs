@@ -8,34 +8,36 @@ function userIndividualPerformance() {
   var tickerRow = 5;
 
 
-  var userFundAllocation = getUserFundAllocation();
-  //Logger.log(userFundAllocation.length);
+  // var userFundAllocation = getUserFundAllocation();
+  // //Logger.log(userFundAllocation.length);
+  //
+  // var userVotes = getUserVotes();
+  // //Logger.log(userVotes.length);
+  //
+  // var userIDs = getUserIDs();
+  // //Logger.log(userIDs.length);
+  //
+  // var totalVotesPerUser = calculateTotalVotesPerUser(userVotes);
+  // //Logger.log(totalVotesPerUser.length);
+  //
+  // //NOTE: with this function array[0] = unallocatedFunds, array[1]-[n] = userFundAllocationPerIndividualStock
+  // var userFundAllocationPerIndividual = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation);
+  // //Logger.log(userFundAllocationPerIndividual);
+  //
+  // var unallocatedFunds = userFundAllocationPerIndividual[0];
+  // userFundAllocationPerIndividual.splice(0,1); //removes first value, which is the unallocatedFunds
+  // //Logger.log(userFundAllocationPerIndividual);
+  // //Logger.log(unallocatedFunds);
+  //
+  // var absoluteContributionPerUser = makeAllocatedFunds(userFundAllocationPerIndividual, userVotes);
+  // //Logger.log(absoluteContributionPerUser);
+  // //Logger.log(absoluteContributionPerUser.length);
+  //
+  // setContributionPerUser(absoluteContributionPerUser,userIDs);
+  //
+  // addAndSetContributionPerUserOverLifeTime(userIDs);
 
-  var userVotes = getUserVotes();
-  //Logger.log(userVotes.length);
-
-  var userIDs = getUserIDs();
-  //Logger.log(userIDs.length);
-
-  var totalVotesPerUser = calculateTotalVotesPerUser(userVotes);
-  //Logger.log(totalVotesPerUser.length);
-
-  //NOTE: with this function array[0] = unallocatedFunds, array[1]-[n] = userFundAllocationPerIndividualStock
-  var userFundAllocationPerIndividual = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation);
-  //Logger.log(userFundAllocationPerIndividual);
-
-  var unallocatedFunds = userFundAllocationPerIndividual[0];
-  userFundAllocationPerIndividual.splice(0,1); //removes first value, which is the unallocatedFunds
-  //Logger.log(userFundAllocationPerIndividual);
-  //Logger.log(unallocatedFunds);
-
-  var absoluteContributionPerUser = makeAllocatedFunds(userFundAllocationPerIndividual, userVotes);
-  Logger.log(absoluteContributionPerUser);
-  Logger.log(absoluteContributionPerUser.length);
-
-  setContributionPerUser(absoluteContributionPerUser,userIDs);
-
-  addAndSetContributionPerUserOverLifeTime(userIDs);
+  defineAlphaContribution()
 
   //Functions
 
@@ -130,6 +132,7 @@ function userIndividualPerformance() {
             //Logger.log(userVotes[k][j]);
             if (j == (parseFloat(userVotes[i].length) - 1)) {
               var addingAllPercentageChange = 0;
+              Logger.log(temp);
               for (t = 0; t < temp.length; t++) {
                 addingAllPercentageChange += temp[t];
               }
@@ -165,8 +168,8 @@ function userIndividualPerformance() {
   }
 
   function setContributionPerUser(absoluteContributionPerUser,userIDs) {
-    Logger.log(absoluteContributionPerUser);
-    Logger.log(userIDs);
+    //Logger.log(absoluteContributionPerUser);
+    //Logger.log(userIDs);
     for (position in absoluteContributionPerUser) {
       if (absoluteContributionPerUser[position] == 0) {
         Logger.log('processing 0 correclty');
@@ -174,7 +177,6 @@ function userIndividualPerformance() {
       }
       else {
         var userSheet = ss.getSheetByName(userIDs[position]);
-        Logger.log(userSheet);
         var userSheetLastRow = userSheet.getLastRow();
         userSheet.getRange(userSheetLastRow, 3).setValue(absoluteContributionPerUser[position])
         continue;
@@ -199,8 +201,35 @@ function userIndividualPerformance() {
             userTotalContribution += parseFloat(temp);
          }
       }
-      Logger.log(userTotalContribution);
+      //Logger.log(userTotalContribution);
       rankingSheet.getRange(3 + j, rankingTableLastColumn).setValue(userTotalContribution);
     }
+  }
+
+  function defineAlphaContribution() {
+    var lastColumnRankingSheet = rankingSheet.getLastColumn();
+    var userTotalScoreColumn = columnToLetter(rankingSheet.getLastColumn());
+    var alphaGenerationColumn = columnToLetter(rankingSheet.getLastColumn() + 2);
+    var lastRowRankingSheet = rankingSheet.getLastRow();
+    var FundValueChange = companySheet.getRange(tickerRow + 9, 4).getValue();
+
+    var columnHeading = 'AlphaGen';
+    var alphaAbsoluteDifference = '=SUM(' + userTotalScoreColumn  + '3:' +  userTotalScoreColumn + lastRowRankingSheet + ')';
+    var alphaPercentageDifference = '=' + alphaGenerationColumn + '2/' + FundValueChange;
+
+    rankingSheet.getRange(2, lastColumnRankingSheet + 1).setValue(columnHeading);
+    rankingSheet.getRange(2, lastColumnRankingSheet + 2).setValue(alphaAbsoluteDifference);
+    rankingSheet.getRange(3, lastColumnRankingSheet + 2).setValue(alphaPercentageDifference);
+  }
+
+  function columnToLetter(column) {
+   var temp, letter = '';
+   while (column > 0)
+   {
+     temp = (column - 1) % 26;
+     letter = String.fromCharCode(temp + 65) + letter;
+     column = (column - temp - 1) / 26;
+   }
+   return letter;
   }
 }
