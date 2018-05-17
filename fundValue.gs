@@ -127,9 +127,6 @@ function setUnallocatedFunds(unallocatedFunds) {
 
 function setAllocatedFunds(userFundAllocationPerIndividual, userVotes) {
 
-  var buyStock = [];
-  var sellStock = [];
-
   for (var i = 0; i < userFundAllocationPerIndividual[0].length; i++) {
     if (userFundAllocationPerIndividual[0][i] == "0") {
       Logger.log('checkibng break one');
