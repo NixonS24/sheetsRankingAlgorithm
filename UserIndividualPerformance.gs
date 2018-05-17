@@ -35,6 +35,8 @@ function userIndividualPerformance() {
 
   setContributionPerUser(absoluteContributionPerUser,userIDs);
 
+  addAndSetContributionPerUserOverLifeTime(userIDs);
+
   //Functions
 
   function getUserFundAllocation() {
@@ -177,6 +179,28 @@ function userIndividualPerformance() {
         userSheet.getRange(userSheetLastRow, 3).setValue(absoluteContributionPerUser[position])
         continue;
       }
+    }
+  }
+
+  function addAndSetContributionPerUserOverLifeTime(userIDs) {
+    var rankingTableLastColumn = rankingSheet.getLastColumn() + 1;
+    rankingSheet.getRange(2, rankingTableLastColumn).setValue('user_Total_Contribution');
+
+    for (j = 0; j < userIDs.length; j ++) {
+      var tempUserSheet = ss.getSheetByName(userIDs[j]);
+      var userSheetLastRow = tempUserSheet.getLastRow(); // + 1 is necessary below because difference in counting, starting at 0 in code, vs starting at 1 in sheets
+      var loopRow = userSheetLastRow + 1;
+      var userTotalContribution = 0;
+      for (var i = 3; i < loopRow; i += 2) {
+        var temp = tempUserSheet.getRange(i , 3).getValue();
+        if (isNaN(parseFloat(temp))) {
+           continue;
+         } else {
+            userTotalContribution += parseFloat(temp);
+         }
+      }
+      Logger.log(userTotalContribution);
+      rankingSheet.getRange(3 + j, rankingTableLastColumn).setValue(userTotalContribution);
     }
   }
 }
