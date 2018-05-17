@@ -39,6 +39,9 @@ function userIndividualPerformance() {
 
   defineAlphaContribution()
 
+  //toDo
+  changeAbsoluteContrinbutionInSheetToPercentage(userIDs);
+
   //Functions
 
   function getUserFundAllocation() {
@@ -172,7 +175,7 @@ function userIndividualPerformance() {
     //Logger.log(userIDs);
     for (position in absoluteContributionPerUser) {
       if (absoluteContributionPerUser[position] == 0) {
-        Logger.log('processing 0 correclty');
+        //Logger.log('processing 0 correclty');
         continue;
       }
       else {
@@ -231,5 +234,13 @@ function userIndividualPerformance() {
      column = (column - temp - 1) / 26;
    }
    return letter;
+  }
+
+  //ToDo
+  function changeAbsoluteContrinbutionInSheetToPercentage(userIDs) {
+    for (user in UserIDs) {
+      var userTempSheet = ss.getSheetByName(UserIDs[user]);
+      var userTempSheetLastRow =
+    }
   }
 }
