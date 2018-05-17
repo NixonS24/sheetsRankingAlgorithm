@@ -9,28 +9,29 @@ function userIndividualPerformance() {
 
 
   var userFundAllocation = getUserFundAllocation();
-  Logger.log(userFundAllocation);
+  Logger.log(userFundAllocation.length);
 
-  // var userVotes = getUserVotes();
-  // Logger.log(userVotes);
-  //
-  // var userIDs = getUserIDs();
-  // Logger.log(userIDs);
-  //
-  // var totalVotesPerUser = calculateTotalVotesPerUser(userVotes);
-  // Logger.log(totalVotesPerUser);
-  //
-  // //NOTE: with this function array[0] = unallocatedFunds, array[1]-[n] = userFundAllocationPerIndividualStock
-  // var userFundAllocationPerIndividual = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation);
-  // //Logger.log(userFundAllocationPerIndividual);
-  //
-  // var unallocatedFunds = userFundAllocationPerIndividual[0];
-  // userFundAllocationPerIndividual.splice(0,1); //removes first value, which is the unallocatedFunds
-  // //Logger.log(userFundAllocationPerIndividual);
-  // //Logger.log(unallocatedFunds);
-  //
-  // var percetangeChangePerUser = makeAllocatedFunds(userFundAllocationPerIndividual, userVotes);
-  //
+  var userVotes = getUserVotes();
+  Logger.log(userVotes.length);
+
+  var userIDs = getUserIDs();
+  Logger.log(userIDs.length);
+
+  var totalVotesPerUser = calculateTotalVotesPerUser(userVotes);
+  Logger.log(totalVotesPerUser.length);
+
+  //NOTE: with this function array[0] = unallocatedFunds, array[1]-[n] = userFundAllocationPerIndividualStock
+  var userFundAllocationPerIndividual = makeUserFundAllocationPerIndividualStock(totalVotesPerUser,userFundAllocation);
+  //Logger.log(userFundAllocationPerIndividual);
+
+  var unallocatedFunds = userFundAllocationPerIndividual[0];
+  userFundAllocationPerIndividual.splice(0,1); //removes first value, which is the unallocatedFunds
+  //Logger.log(userFundAllocationPerIndividual);
+  //Logger.log(unallocatedFunds);
+
+  var percetangeChangePerUser = makeAllocatedFunds(userFundAllocationPerIndividual, userVotes);
+  Logger.log(percetangeChangePerUser);
+  Logger.log(percetangeChangePerUser.length);
 
 
   //Functions
@@ -112,7 +113,7 @@ function userIndividualPerformance() {
   }
 
   function makeAllocatedFunds(userFundAllocationPerIndividual, userVotes) {
-
+    //Logger.log(userFundAllocationPerIndividual);
     var percentageChangeUser = [];
 
     for (var i = 0; i < userFundAllocationPerIndividual[0].length; i++) {
@@ -125,19 +126,23 @@ function userIndividualPerformance() {
           for (j = 0; j < userVotes[i].length; j++) {
             //Logger.log(userVotes[k][j]);
             if (j == (parseFloat(userVotes[i].length) - 1)) {
-                var addingAllPercentageChange;
+                var addingAllPercentageChange = 0;
               for (t = 0; t < temp.length; t++) {
-                addingAllPercentageChange += parseFloat(temp[t]);
-                percentageChangeUser.push(addingAllPercentageChange);
+                addingAllPercentageChange += temp[t];
               }
+               percentageChangeUser.push(addingAllPercentageChange);
+                Logger.log(addingAllPercentageChange + ' addingallpercetangechange');
             }
             else if (userVotes[i][j] == "0") {
               continue;
             }
             else if (userVotes[i][j] == "1") {
              var stockChange = companySheet.getRange(tickerRow - 2 , j + 2).getValue();
+             Logger.log(stockChange + ' stockChange');
              var performanceFigure = parseFloat(userFundAllocationPerIndividual[0][i]) * parseFloat(stockChange);
+             Logger.log(performanceFigure + ' performanceFigure');
              temp.push(performanceFigure);
+              Logger.log(temp + ' temp');
               // Logger.log(j);
               // Logger.log(userFundAllocationPerIndividual[0][i]);
               continue;
