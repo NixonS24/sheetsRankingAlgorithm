@@ -38,7 +38,7 @@ function userIndividualPerformance() {
   function getUserFundAllocation() {
     var userFundAllocation = [];
     var lastRow = rankingSheet.getLastRow() - 1;
-    var userFundObject = rankingSheet.getRange(3,6,lastRow - 2,1).getValues() //This is a depency, as we are assuming that userIDs start at row 2
+    var userFundObject = rankingSheet.getRange(3,6,lastRow - 1,1).getValues() //This is a depency, as we are assuming that userIDs start at row 2
     for (var i = 0; i < userFundObject.length; i ++) {
       userFundAllocation.push(userFundObject[i][0]);
     }

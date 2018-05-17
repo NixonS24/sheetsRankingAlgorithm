@@ -62,6 +62,7 @@ function cohortAnalysis() {
   function makeChangeInUserEngagamentScore(userEngamentScore) {
     Logger.log(userEngamentScore);
     var changeInUserEngagementScore = [];
+    //This needs to refactored at some point to take into account when we started to autmoatically resetting votes. 
     for (var i = 0; i < userEngamentScore.length; i ++) {
       switch (i) {
         case 0:
