@@ -39,8 +39,8 @@ function userIndividualPerformance() {
 
   defineAlphaContribution()
 
-  //toDo
-  changeAbsoluteContrinbutionInSheetToPercentage(userIDs);
+  //toDo - maybe not sure about this
+  //changeAbsoluteContrinbutionInSheetToPercentage(userIDs);
 
   //Functions
 
@@ -218,7 +218,7 @@ function userIndividualPerformance() {
 
     var columnHeading = 'AlphaGen';
     var alphaAbsoluteDifference = '=SUM(' + userTotalScoreColumn  + '3:' +  userTotalScoreColumn + lastRowRankingSheet + ')';
-    var alphaPercentageDifference = '=' + alphaGenerationColumn + '2/' + FundValueChange;
+    var alphaPercentageDifference = '=' + alphaGenerationColumn + '2/ABS(' + FundValueChange + ')';
 
     rankingSheet.getRange(2, lastColumnRankingSheet + 1).setValue(columnHeading);
     rankingSheet.getRange(2, lastColumnRankingSheet + 2).setValue(alphaAbsoluteDifference);
@@ -234,13 +234,5 @@ function userIndividualPerformance() {
      column = (column - temp - 1) / 26;
    }
    return letter;
-  }
-
-  //ToDo
-  function changeAbsoluteContrinbutionInSheetToPercentage(userIDs) {
-    for (user in UserIDs) {
-      var userTempSheet = ss.getSheetByName(UserIDs[user]);
-      var userTempSheetLastRow =
-    }
   }
 }
