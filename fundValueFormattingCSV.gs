@@ -47,9 +47,10 @@ function setFundValue() {
 function setFundChange() {
   var fundValueChangeName = 'Fund_Change';
   var fundValueChangeFigure = companySheet.getRange(tickerRow + 9, 3).getValue();
+  var fundValueChangeFigureTwoDecimalPlaces = (fundValueChangeFigure * 100).toFixed(2); //The output figure will be expressed as a percentage to two percentage points, to interact with Matt's system
 
   fundValueFormattingSheet.getRange(2,1).setValue(fundValueChangeName);
-  fundValueFormattingSheet.getRange(2,2).setValue(fundValueChangeFigure);
+  fundValueFormattingSheet.getRange(2,2).setValue(fundValueChangeFigureTwoDecimalPlaces);
 
 }
 
