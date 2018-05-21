@@ -37,7 +37,7 @@ function makeUserFundAllocation() {
 
   var array = [];
   var updatedFundValue = ss.getSheetByName('Fund Value FormattingCSV').getRange(1,2).getValue();
-//Logger.log(updatedFundValue);
+  //Logger.log(updatedFundValue);
   var rankingTable = ss.getSheetByName('rankingTable');
 
   //Get powerVote number in an object
@@ -126,9 +126,6 @@ function setUnallocatedFunds(unallocatedFunds) {
 }
 
 function setAllocatedFunds(userFundAllocationPerIndividual, userVotes) {
-
-  var buyStock = [];
-  var sellStock = [];
 
   for (var i = 0; i < userFundAllocationPerIndividual[0].length; i++) {
     if (userFundAllocationPerIndividual[0][i] == "0") {
